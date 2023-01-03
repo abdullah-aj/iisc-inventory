@@ -1,2 +1,0 @@
-# iisc-inventory
-Inventory App
