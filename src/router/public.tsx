@@ -7,9 +7,11 @@ const PublicRoutes: React.FC = () => {
   const Stack = createNativeStackNavigator();
   return (
     <>
-      <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen name={'login'} component={Login} />
+      <Stack.Navigator
+        initialRouteName="login"
+        screenOptions={{headerShown: false}}>
         <Stack.Screen name={'splash'} component={Splash} />
+        <Stack.Screen name={'login'} component={Login} />
       </Stack.Navigator>
     </>
   );

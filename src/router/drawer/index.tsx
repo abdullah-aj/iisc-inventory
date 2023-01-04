@@ -8,6 +8,7 @@ const DrawerNavigation: React.FC = () => {
   return (
     <>
       <Drawer.Navigator
+        //initialRouteName="home"
         screenOptions={{
           headerShown: false,
           drawerPosition: 'right',

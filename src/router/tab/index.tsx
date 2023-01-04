@@ -1,5 +1,4 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Icon} from '@rneui/themed';
 import StackNavigation from '../stack';
@@ -50,13 +49,13 @@ const TabNavigation: React.FC = () => {
               );
             }
           },
-          tabBarBackground: () => (
-            <View style={styles.bottomBarContainer}>
-              {/* <BottomColors style={styles.bottomColors} /> */}
-            </View>
-          ),
+          // tabBarBackground: () => (
+          //   <View style={styles.bottomBarContainer}>
+          //     {/* <BottomColors style={styles.bottomColors} /> */}
+          //   </View>
+          // ),
         })}>
-        {/* <Tab.Screen name="profile" component={Profile} /> */}
+        <Tab.Screen name="profile" component={Notifications} />
         <Tab.Screen name="homeStack" component={StackNavigation} />
         <Tab.Screen name="notification" component={Notifications} />
       </Tab.Navigator>
@@ -66,14 +65,14 @@ const TabNavigation: React.FC = () => {
 
 export default TabNavigation;
 
-const styles = StyleSheet.create({
-  bottomBarContainer: {
-    backgroundColor: '#fff',
-    height: '100%',
-    width: 200,
-  },
-  bottomColors: {
-    alignSelf: 'center',
-    marginTop: -2,
-  },
-});
+// const styles = StyleSheet.create({
+//   bottomBarContainer: {
+//     backgroundColor: '#fff',
+//     height: '100%',
+//     width: 200,
+//   },
+//   bottomColors: {
+//     alignSelf: 'center',
+//     marginTop: -2,
+//   },
+// });
