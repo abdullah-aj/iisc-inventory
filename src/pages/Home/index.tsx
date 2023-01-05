@@ -4,14 +4,17 @@ import {StyleSheet, View} from 'react-native';
 import {Colors, Sizes} from '../../assets/Theme';
 import FullPage from '../../components/layouts/full-page/FullPage';
 import {CommonStyles} from '../../assets/CommonStyle';
+import {useNavigation} from '@react-navigation/native';
 
 export const Home = () => {
+  const navigation = useNavigation<any>();
+
   const handleAddAsset = () => {
-    console.log('Add Asset');
+    navigation.push('barcode');
   };
 
   return (
-    <FullPage title="ADDING ASSET" hasBackBtn={true}>
+    <FullPage title="ADDING ASSET">
       <View style={styles.centerContainer}>
         <View style={styles.innerCircle}>
           <Button

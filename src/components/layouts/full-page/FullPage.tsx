@@ -7,9 +7,9 @@ import {useNavigation} from '@react-navigation/native';
 import {DrawerNavigationProp} from '@react-navigation/drawer';
 
 type Props = {
-  children?: JSX.Element;
   title: string;
-  hasBackBtn: boolean;
+  children?: JSX.Element;
+  hasBackBtn?: boolean;
 };
 
 const FullPage: FC<Props> = ({children, title, hasBackBtn}) => {
@@ -27,7 +27,7 @@ const FullPage: FC<Props> = ({children, title, hasBackBtn}) => {
         }}
         leftComponent={
           hasBackBtn ? (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={navigation.goBack}>
               <Icon
                 name="arrow-back-outline"
                 type="ionicon"
