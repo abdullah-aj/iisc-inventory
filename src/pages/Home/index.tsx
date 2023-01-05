@@ -1,17 +1,54 @@
 import {Button} from '@rneui/base';
 import React from 'react';
-import {Text, View} from 'react-native';
-import {useAuth} from '../../hooks/useAuth';
+import {StyleSheet, View} from 'react-native';
+import {Colors, Sizes} from '../../assets/Theme';
+import FullPage from '../../components/layouts/full-page/FullPage';
+import {CommonStyles} from '../../assets/CommonStyle';
 
 export const Home = () => {
-  const {logoutAction} = useAuth();
+  const handleAddAsset = () => {
+    console.log('Add Asset');
+  };
+
   return (
-    <View
-      style={{
-        backgroundColor: '#333',
-      }}>
-      <Text>Home Screen</Text>
-      <Button onPress={logoutAction}>Logout</Button>
-    </View>
+    <FullPage title="ADDING ASSET" hasBackBtn={true}>
+      <View style={styles.centerContainer}>
+        <View style={styles.innerCircle}>
+          <Button
+            buttonStyle={[CommonStyles.buttonStyle, styles.button]}
+            disabledStyle={CommonStyles.buttonDisabledStyle}
+            containerStyle={CommonStyles.buttonContainerStyle}
+            onPress={handleAddAsset}
+            title="ADD ASSET"
+            titleStyle={CommonStyles.buttonTitleStyle}
+          />
+        </View>
+      </View>
+    </FullPage>
   );
 };
+
+const styles = StyleSheet.create({
+  centerContainer: {
+    backgroundColor: Colors.gray_8,
+    height: Sizes.windowWidth * 0.9,
+    width: Sizes.windowWidth * 0.9,
+    borderRadius: Sizes.windowWidth * 0.9,
+    alignSelf: 'center',
+    marginTop: Sizes.windowHeight * 0.19,
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+  innerCircle: {
+    backgroundColor: Colors.gray_7,
+    height: Sizes.windowWidth * 0.7,
+    width: Sizes.windowWidth * 0.7,
+    borderRadius: Sizes.windowWidth * 0.7,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  button: {
+    width: Sizes.windowWidth * 0.5,
+  },
+});

@@ -1,14 +1,13 @@
 import React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import TabNavigation from '../tab';
-import DrawerMenu from './Menu';
+import DrawerMenu from './Menu/Menu';
 
 const DrawerNavigation: React.FC = () => {
   const Drawer = createDrawerNavigator();
   return (
     <>
       <Drawer.Navigator
-        //initialRouteName="home"
         screenOptions={{
           headerShown: false,
           drawerPosition: 'right',
