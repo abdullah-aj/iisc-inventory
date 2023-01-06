@@ -1,5 +1,5 @@
 import React, {FC, useState} from 'react';
-import {Alert, StyleSheet, Text} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {useCameraDevices} from 'react-native-vision-camera';
 import {Camera} from 'react-native-vision-camera';
 import {
@@ -14,7 +14,6 @@ type Props = {
 
 export const BarcodeScanner: FC<Props> = ({onCapture}): JSX.Element => {
   const [hasPermission, setHasPermission] = useState(false);
-  const [barcode, setBarcode] = React.useState('');
   const [isScanned, setIsScanned] = React.useState(false);
 
   const devices = useCameraDevices();
@@ -36,6 +35,7 @@ export const BarcodeScanner: FC<Props> = ({onCapture}): JSX.Element => {
     return () => {
       barcodes;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [barcodes]);
 
   const toggleActiveState = async () => {
@@ -60,11 +60,3 @@ export const BarcodeScanner: FC<Props> = ({onCapture}): JSX.Element => {
     <></>
   );
 };
-
-const styles = StyleSheet.create({
-  barcodeTextURL: {
-    fontSize: 20,
-    color: 'white',
-    fontWeight: 'bold',
-  },
-});

@@ -9,8 +9,13 @@ import {Camera} from 'react-native-vision-camera';
 import Toast from 'react-native-toast-message';
 import {BarcodeScanner} from '../../components/BarcodeScanner/BarcodeScanner';
 import {Barcode} from 'vision-camera-code-scanner';
+import {useProduct} from '../../hooks/useProduct';
+import {useNavigation} from '@react-navigation/native';
 
 export const BarcodePage = () => {
+  const navigation = useNavigation<any>();
+  const {addBarcode} = useProduct();
+
   const [openScanner, setOpenScanner] = useState(false);
 
   const handleBarcodeScan = async () => {
@@ -25,6 +30,8 @@ export const BarcodePage = () => {
           text2: 'Please allow this app to use the camera',
           onHide: () => Linking.openSettings(),
         });
+      } else {
+        handleBarcodeScan();
       }
       return false;
     } else {
@@ -35,15 +42,18 @@ export const BarcodePage = () => {
 
   const onCodeCapture = (code: Barcode[]) => {
     setOpenScanner(false);
-    code.forEach(async (scannedBarcode: any) => {
-      if (scannedBarcode.rawValue !== '') {
-        Toast.show({
-          type: 'error',
-          text1: 'Code Scanned',
-          text2: scannedBarcode.displayValue,
-        });
-      }
-    });
+    if (code.length > 1) {
+      Toast.show({
+        type: 'error',
+        text1: 'Multiple Barcode Detected',
+        text2:
+          'Please make sure there is only one code in the screen when scanning',
+      });
+    } else if (code.length === 1) {
+      const val = code[0].displayValue || '';
+      addBarcode(val);
+      navigation.push('productImageList');
+    }
   };
 
   return (
