@@ -52,7 +52,7 @@ export const BarcodePage = () => {
     } else if (code.length === 1) {
       const val = code[0].displayValue || '';
       addBarcode(val);
-      navigation.push('productImageList');
+      navigation.push('productImageList', {code: val});
     }
   };
 

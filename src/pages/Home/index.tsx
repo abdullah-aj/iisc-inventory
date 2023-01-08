@@ -1,10 +1,11 @@
 import {Button} from '@rneui/base';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Colors, Sizes} from '../../assets/Theme';
 import FullPage from '../../components/layouts/full-page/FullPage';
 import {CommonStyles} from '../../assets/CommonStyle';
 import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Home = () => {
   const navigation = useNavigation<any>();
@@ -12,6 +13,12 @@ export const Home = () => {
   const handleAddAsset = () => {
     navigation.push('barcode');
   };
+
+  useEffect(() => {
+    (async () => {
+      AsyncStorage.clear();
+    })();
+  }, []);
 
   return (
     <FullPage title="ADDING ASSET">

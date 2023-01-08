@@ -6,6 +6,7 @@ import {Sizes} from '../../assets/Theme';
 import {CommonStyles} from '../../assets/CommonStyle';
 import {Button} from '@rneui/themed';
 import {CameraButton} from '../../components/CameraButton/CameraButton';
+import {useProduct} from '../../hooks/useProduct';
 
 type ImgListType = {
   id: number;
@@ -15,48 +16,24 @@ type ImgListType = {
 export const ProductImageList = () => {
   const navigation = useNavigation<any>();
   const route: any = useRoute();
-  const [imgList, setImgList] = useState<Array<ImgListType>>([
-    {
-      id: 1,
-      path: '',
-    },
-    {
-      id: 2,
-      path: '',
-    },
-    {
-      id: 3,
-      path: '',
-    },
-  ]);
+  const {getProduct} = useProduct();
+
+  const [imgList, setImgList] = useState<Array<ImgListType>>([]);
+  const [hasAllImages, setHasAllImages] = useState(false);
 
   const handleNext = () => {};
 
   const handleCameraClick = (id: number) => {
-    const img = imgList.find(item => item.id === id);
-    navigation.push('captureImage', {id: id, image: img?.path || ''});
+    navigation.push('captureImage', {id: id, code: route?.params?.code});
   };
 
   useEffect(() => {
-    if (route?.params?.id) {
-      const item = imgList.find(img => img.id === route.params.id);
-      if (item) {
-        const list = imgList.map(img => {
-          if (img.id === route.params.id) {
-            return {...img, path: route.params.image};
-          } else {
-            return img;
-          }
-        });
-        setImgList(list);
-      } else {
-        setImgList([
-          ...imgList,
-          {
-            id: route.params.id,
-            path: route.params.image,
-          },
-        ]);
+    if (route?.params?.code) {
+      const prod = getProduct(route.params.code);
+      if (prod?.image && prod.image.length) {
+        setImgList([...prod.image]);
+        const set = prod.image.filter(img => img.path !== '');
+        setHasAllImages(set.length === 3);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -78,7 +55,7 @@ export const ProductImageList = () => {
         </View>
         <View>
           <Button
-            disabled={imgList.length < 3}
+            disabled={!hasAllImages}
             buttonStyle={[CommonStyles.buttonStyle, styles.button]}
             disabledStyle={CommonStyles.buttonDisabledStyle}
             containerStyle={CommonStyles.buttonContainerStyle}

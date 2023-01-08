@@ -7,6 +7,7 @@ import {
   PermissionsAndroid,
   Platform,
   Image,
+  Alert,
 } from 'react-native';
 import {Sizes, Colors} from '../../assets/Theme';
 import FullPage from '../../components/layouts/full-page/FullPage';
@@ -18,6 +19,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {Icon} from '@rneui/themed';
 import {CameraPage} from '../../components/Camera/CameraPage';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
+import {useProduct} from '../../hooks/useProduct';
 
 type ImageType = {
   path: string;
@@ -27,14 +29,26 @@ type ImageType = {
 export const CaptureImage = () => {
   const navigation = useNavigation<any>();
   const route: any = useRoute();
+  const {addImage, getProduct} = useProduct();
 
   const [openCamera, setOpenCamera] = useState(false);
   const [imageSource, setImageSource] = useState<any>(null);
 
   useEffect(() => {
-    if (route?.params?.image !== '') {
-      setImageSource({uri: route.params.image});
+    if (route?.params?.code) {
+      const prod = getProduct(route.params.code);
+      if (prod?.image && prod.image.length) {
+        const selectedImg = prod.image.find(
+          image => image.id === route.params.id,
+        );
+        if (selectedImg?.path) {
+          setImageSource({uri: selectedImg?.path});
+        } else {
+          setImageSource(null);
+        }
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [route.params]);
 
   const handleCaptureImage = async () => {
@@ -61,15 +75,18 @@ export const CaptureImage = () => {
   const onImageCapture = async (image: ImageType) => {
     setOpenCamera(false);
     const {path, type} = image;
-    const uri = await saveImage(path, type);
-    if (uri) {
-      setImageSource({uri: uri});
+    if (route?.params?.code) {
+      const uri = await saveImage(path, type);
+      if (uri) {
+        setImageSource({uri: uri});
+        addImage(route.params.code, {id: route.params.id, path: uri});
+      }
+      // setImageSource({uri: `file://${path}`});
 
-      // TODO: Add Image to useProduct Hook
+      navigation.push('productImageList', {code: route.params.code});
+    } else {
+      Alert.alert('CODE NOT FOUND', 'Please Scan the Barcode again');
     }
-    // setImageSource({uri: `file://${path}`});
-
-    navigation.push('productImageList', {id: route.params.id, image: uri});
   };
 
   const imageView = () => {
