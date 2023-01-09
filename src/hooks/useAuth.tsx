@@ -9,6 +9,7 @@ import React, {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useAsyncStorage} from '@react-native-async-storage/async-storage';
 import {STORAGE_KEY} from '../utils/constants';
+import {PRODUCT_KEY} from './useProduct';
 
 type User = {
   username: string;
@@ -30,8 +31,10 @@ export const useAuth = () => {
   return useContext(AuthContext);
 };
 
+const USER_DATA_KEY = `${STORAGE_KEY}-USER`;
+
 export const AuthProvider = ({children}: AuthProviderProps) => {
-  const {getItem, setItem} = useAsyncStorage(`${STORAGE_KEY}-USER`);
+  const {getItem, setItem} = useAsyncStorage(USER_DATA_KEY);
 
   const [user, setUser] = useState<User | null>(null);
 
@@ -55,6 +58,8 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
   const logoutAction = async () => {
     setUser(null);
     await AsyncStorage.clear();
+    await AsyncStorage.removeItem(USER_DATA_KEY);
+    await AsyncStorage.removeItem(PRODUCT_KEY);
   };
 
   const value = useMemo(

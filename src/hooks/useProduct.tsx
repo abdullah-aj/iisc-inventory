@@ -72,8 +72,10 @@ export const useProduct = () => {
   return useContext(ProductContext);
 };
 
+export const PRODUCT_KEY = `${STORAGE_KEY}-PRODUCTS`;
+
 export const ProductProvider = ({children}: ProductProviderProps) => {
-  const {getItem, setItem} = useAsyncStorage(`${STORAGE_KEY}-PRODUCTS`);
+  const {getItem, setItem} = useAsyncStorage(PRODUCT_KEY);
 
   const [products, setProducts] = useState<Product[]>([]);
 
