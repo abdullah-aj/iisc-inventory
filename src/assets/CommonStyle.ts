@@ -33,4 +33,11 @@ export const CommonStyles = StyleSheet.create({
     margin: 5,
   },
   buttonTitleStyle: {marginHorizontal: 5},
+  outLineButtonStyle: {
+    height: 45,
+    borderColor: Colors.primary_color_1,
+  },
+  outlineBtnTextStyle: {
+    color: Colors.primary_color_1,
+  },
 });

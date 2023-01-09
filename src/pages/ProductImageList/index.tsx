@@ -21,7 +21,9 @@ export const ProductImageList = () => {
   const [imgList, setImgList] = useState<Array<ImgListType>>([]);
   const [hasAllImages, setHasAllImages] = useState(false);
 
-  const handleNext = () => {};
+  const handleNext = () => {
+    navigation.push('typeSelection', {code: route?.params?.code});
+  };
 
   const handleCameraClick = (id: number) => {
     navigation.push('captureImage', {id: id, code: route?.params?.code});

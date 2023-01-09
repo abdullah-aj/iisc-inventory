@@ -5,6 +5,13 @@ import {Notifications} from '../../pages/Notifications';
 import {BarcodePage} from '../../pages/BarcodePage';
 import {ProductImageList} from '../../pages/ProductImageList';
 import {CaptureImage} from '../../pages/CaptureImage';
+import {TypeSelection} from '../../pages/TypeSelection';
+import {BioData} from '../../pages/BioData';
+import {GeoData} from '../../pages/GeoData';
+import {AssetData} from '../../pages/AssetData';
+import {EntityData} from '../../pages/EntityData';
+import {FinishScreen} from '../../pages/FinishScreen';
+import {MachineData} from '../../pages/MachineData';
 
 const StackNavigation: React.FC = () => {
   const Stack = createNativeStackNavigator();
@@ -19,6 +26,13 @@ const StackNavigation: React.FC = () => {
         <Stack.Screen name={'barcode'} component={BarcodePage} />
         <Stack.Screen name={'productImageList'} component={ProductImageList} />
         <Stack.Screen name={'captureImage'} component={CaptureImage} />
+        <Stack.Screen name={'typeSelection'} component={TypeSelection} />
+        <Stack.Screen name={'bioData'} component={BioData} />
+        <Stack.Screen name={'geoData'} component={GeoData} />
+        <Stack.Screen name={'assetData'} component={AssetData} />
+        <Stack.Screen name={'entityData'} component={EntityData} />
+        <Stack.Screen name={'finishScreen'} component={FinishScreen} />
+        <Stack.Screen name={'machineData'} component={MachineData} />
       </Stack.Navigator>
     </>
   );

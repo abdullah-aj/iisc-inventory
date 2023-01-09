@@ -9,16 +9,32 @@ import {useAsyncStorage} from '@react-native-async-storage/async-storage';
 import {STORAGE_KEY} from '../utils/constants';
 
 type ProductData = {
-  name: string;
-  height: string;
-  width: string;
-  weight: string;
-};
+  gender?: 'male' | 'female';
+  productionCapacity?: string;
+  purpose?: string;
+  stageInBiologicalCycle?: string;
+  biologicalAge?: number;
+  usefulLife?: number;
 
-type Product = {
-  barcode: string;
-  image?: imageType[];
-  data?: ProductData;
+  geographicalCoordinates?: string;
+  zipCode?: string;
+  roomNumber?: string;
+  floorNumber?: string;
+  buildingNumber?: string;
+  city?: string;
+  region?: string;
+  country?: string;
+
+  custodian?: string;
+  uniqueFactoryId?: string;
+  quantity?: number;
+  baseUnitOfMeasure?: string;
+  tagNumber?: string;
+  assetDescription?: string;
+  uniqueAssetNumber?: string;
+
+  entityCode?: string;
+  entity?: string;
 };
 
 type imageType = {
@@ -26,13 +42,24 @@ type imageType = {
   path: string;
 };
 
+type ProdType = 'BIO' | 'MACHINE';
+
+type Product = {
+  barcode: string;
+  image?: imageType[];
+  data?: ProductData;
+  type?: ProdType;
+};
+
 type ProductContext = {
   products: Product[];
   addBarcode: (code: string) => Promise<void>;
   addImage: (code: string, imageData: imageType) => Promise<void>;
+  addType: (code: string, type: ProdType) => Promise<void>;
   addData: (code: string, data: ProductData) => Promise<void>;
   removeProduct: (code: string) => Promise<void>;
   getProduct: (code: string) => Product | undefined;
+  getType: (code: string) => ProdType | undefined;
 };
 
 type ProductProviderProps = {
@@ -107,6 +134,19 @@ export const ProductProvider = ({children}: ProductProviderProps) => {
     setProducts(prodUpdated);
     await setItem(JSON.stringify(prodUpdated));
   };
+
+  const addType = async (code: string, type: ProdType) => {
+    const prodUpdated = [...products].map((product: Product) => {
+      if (product.barcode === code) {
+        return {...product, type: type, data: {}};
+      } else {
+        return product;
+      }
+    });
+    setProducts(prodUpdated);
+    await setItem(JSON.stringify(prodUpdated));
+  };
+
   const addData = async (code: string, dataObj: ProductData) => {
     const data = [...products];
     data.map((item: Product) => {
@@ -127,6 +167,15 @@ export const ProductProvider = ({children}: ProductProviderProps) => {
     return [...products].find(product => product.barcode === code);
   };
 
+  const getType = (code: string) => {
+    const prod = [...products].find(product => product.barcode === code);
+    if (prod) {
+      return prod.type;
+    } else {
+      return undefined;
+    }
+  };
+
   useEffect(() => {
     (async () => {
       const data = await getItem();
@@ -143,9 +192,11 @@ export const ProductProvider = ({children}: ProductProviderProps) => {
         products,
         addBarcode,
         addImage,
+        addType,
         addData,
         removeProduct,
         getProduct,
+        getType,
       }}>
       {children}
     </ProductContext.Provider>

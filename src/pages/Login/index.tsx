@@ -16,11 +16,18 @@ export const Login = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [errorEmail, setErrorEmail] = useState<string>('');
   const [errorPassword, setErrorPassword] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
 
   const handleLogin = async () => {
     setLoading(true);
     setTimeout(() => {
-      loginAction({username: 'Hello User'});
+      if (email.toUpperCase() === 'USER' && password.toUpperCase() === 'USER') {
+        loginAction({username: 'Hello User'});
+      } else {
+        setErrorEmail('Email or user name is not valid');
+        setErrorPassword('Password is not valid');
+      }
       setLoading(false);
     }, 1000);
   };
@@ -47,6 +54,10 @@ export const Login = () => {
               labelStyle={CommonStyles.labelStyle}
               labelProps={{}}
               placeholder="Enter Email"
+              onChangeText={value => {
+                setErrorEmail('');
+                setEmail(value);
+              }}
             />
 
             <Input
@@ -61,11 +72,15 @@ export const Login = () => {
               labelStyle={CommonStyles.labelStyle}
               labelProps={{}}
               placeholder="Password"
+              onChangeText={value => {
+                setErrorPassword('');
+                setPassword(value);
+              }}
             />
 
             <View style={styles.buttonContainer}>
               <Button
-                disabled={loading}
+                disabled={loading || email === '' || password === ''}
                 buttonStyle={CommonStyles.buttonStyle}
                 disabledStyle={CommonStyles.buttonDisabledStyle}
                 containerStyle={CommonStyles.buttonContainerStyle}
