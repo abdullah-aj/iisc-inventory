@@ -83,7 +83,10 @@ export const CaptureImage = () => {
       }
       // setImageSource({uri: `file://${path}`});
 
-      navigation.push('productImageList', {code: route.params.code});
+      navigation.push('productImageList', {
+        code: route.params.code,
+        symmetricalTo: route?.params?.symmetricalTo,
+      });
     } else {
       Alert.alert('CODE NOT FOUND', 'Please Scan the Barcode again');
     }

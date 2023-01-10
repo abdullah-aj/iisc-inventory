@@ -10,9 +10,10 @@ import Toast from 'react-native-toast-message';
 import {BarcodeScanner} from '../../components/BarcodeScanner/BarcodeScanner';
 import {Barcode} from 'vision-camera-code-scanner';
 import {useProduct} from '../../hooks/useProduct';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
 export const BarcodePage = () => {
+  const route: any = useRoute();
   const navigation = useNavigation<any>();
   const {addBarcode} = useProduct();
 
@@ -52,7 +53,16 @@ export const BarcodePage = () => {
     } else if (code.length === 1) {
       const val = code[0].displayValue || '';
       addBarcode(val);
-      navigation.push('productImageList', {code: val});
+      if (route?.params?.symmetricalTo) {
+        navigation.push('productImageList', {
+          code: val,
+          symmetricalTo: route.params.symmetricalTo,
+        });
+      } else {
+        navigation.push('productImageList', {
+          code: val,
+        });
+      }
     }
   };
 

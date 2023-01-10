@@ -6,7 +6,7 @@ import {Sizes} from '../../assets/Theme';
 import {CommonStyles} from '../../assets/CommonStyle';
 import {Button} from '@rneui/themed';
 import {CameraButton} from '../../components/CameraButton/CameraButton';
-import {useProduct} from '../../hooks/useProduct';
+import {useProduct, Product} from '../../hooks/useProduct';
 
 type ImgListType = {
   id: number;
@@ -16,22 +16,56 @@ type ImgListType = {
 export const ProductImageList = () => {
   const navigation = useNavigation<any>();
   const route: any = useRoute();
-  const {getProduct} = useProduct();
+  const {getProduct, addData, addType} = useProduct();
 
   const [imgList, setImgList] = useState<Array<ImgListType>>([]);
   const [hasAllImages, setHasAllImages] = useState(false);
+  const [symmetricalTo, setSymmetricalTo] = useState('');
 
   const handleNext = () => {
-    navigation.push('typeSelection', {code: route?.params?.code});
+    if (symmetricalTo) {
+      navigation.push('finishScreen', {
+        code: route?.params?.code,
+      });
+    } else {
+      navigation.push('typeSelection', {code: route?.params?.code});
+    }
   };
 
   const handleCameraClick = (id: number) => {
-    navigation.push('captureImage', {id: id, code: route?.params?.code});
+    navigation.push('captureImage', {
+      id: id,
+      code: route?.params?.code,
+      symmetricalTo: symmetricalTo,
+    });
   };
 
   useEffect(() => {
-    if (route?.params?.code) {
-      const prod = getProduct(route.params.code);
+    if (symmetricalTo) {
+      const code = route?.params?.code;
+      // get symmetrical data into current product
+      (async () => {
+        const symmetricalProd = getProduct(symmetricalTo);
+        if (symmetricalProd?.data && symmetricalProd?.type) {
+          // Hack for avoiding overwriting of hook state
+          if (hasAllImages) {
+            await addData(code, symmetricalProd.data);
+          } else {
+            await addType(code, symmetricalProd.type);
+          }
+        }
+      })();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [symmetricalTo, hasAllImages]);
+
+  useEffect(() => {
+    const code = route?.params?.code;
+    if (code && code !== '') {
+      if (route?.params?.symmetricalTo) {
+        setSymmetricalTo(route.params.symmetricalTo);
+      }
+      const prod: Product | undefined = getProduct(code);
       if (prod?.image && prod.image.length) {
         setImgList([...prod.image]);
         const set = prod.image.filter(img => img.path !== '');

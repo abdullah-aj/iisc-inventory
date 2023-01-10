@@ -44,7 +44,7 @@ type imageType = {
 
 type ProdType = 'BIO' | 'MACHINE';
 
-type Product = {
+export type Product = {
   barcode: string;
   image?: imageType[];
   data?: ProductData;
@@ -80,29 +80,46 @@ export const ProductProvider = ({children}: ProductProviderProps) => {
   const [products, setProducts] = useState<Product[]>([]);
 
   const addBarcode = async (code: string) => {
-    const data = [
-      ...products,
-      {
-        barcode: code,
-        image: [
-          {
-            id: 1,
-            path: '',
-          },
-          {
-            id: 2,
-            path: '',
-          },
-          {
-            id: 3,
-            path: '',
-          },
-        ],
-      },
-    ];
-    setProducts(data);
-    await setItem(JSON.stringify(data));
+    const found = products.find(product => product.barcode === code);
+    let data;
+    if (found) {
+      data = products.map(product => {
+        if (product.barcode === code) {
+          return {...product, barcode: code};
+        } else {
+          return product;
+        }
+      });
+    } else {
+      data = [
+        ...products,
+        {
+          barcode: code,
+          image: [
+            {
+              id: 1,
+              path: '',
+            },
+            {
+              id: 2,
+              path: '',
+            },
+            {
+              id: 3,
+              path: '',
+            },
+          ],
+        },
+      ];
+    }
+    if (data) {
+      setProducts(data);
+      return await setItem(JSON.stringify(data));
+    } else {
+      return Promise.reject();
+    }
   };
+
   const addImage = async (code: string, imageData: imageType) => {
     const prodUpdated = [...products].map((product: Product) => {
       if (product.barcode === code) {
@@ -134,7 +151,7 @@ export const ProductProvider = ({children}: ProductProviderProps) => {
     });
 
     setProducts(prodUpdated);
-    await setItem(JSON.stringify(prodUpdated));
+    return await setItem(JSON.stringify(prodUpdated));
   };
 
   const addType = async (code: string, type: ProdType) => {
@@ -146,23 +163,26 @@ export const ProductProvider = ({children}: ProductProviderProps) => {
       }
     });
     setProducts(prodUpdated);
-    await setItem(JSON.stringify(prodUpdated));
+    return await setItem(JSON.stringify(prodUpdated));
   };
 
   const addData = async (code: string, dataObj: ProductData) => {
-    const data = [...products];
-    data.map((item: Product) => {
-      if (item.barcode === code) {
-        return {...item, data: dataObj};
+    const prodUpdated = [...products].map((product: Product) => {
+      if (product.barcode === code) {
+        return {...product, data: dataObj};
+      } else {
+        return product;
       }
     });
-    setProducts(data);
-    await setItem(JSON.stringify(data));
+
+    setProducts(prodUpdated);
+    return await setItem(JSON.stringify(prodUpdated));
   };
+
   const removeProduct = async (code: string) => {
     const data = [...products].filter((item: Product) => item.barcode !== code);
     setProducts(data);
-    await setItem(JSON.stringify(data));
+    return await setItem(JSON.stringify(data));
   };
 
   const getProduct = (code: string) => {

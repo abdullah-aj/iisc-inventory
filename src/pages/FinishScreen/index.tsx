@@ -1,76 +1,60 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import FullPage from '../../components/layouts/full-page/FullPage';
-import {Sizes} from '../../assets/Theme';
+import {Sizes, Colors} from '../../assets/Theme';
 import {CommonStyles} from '../../assets/CommonStyle';
 import {Button} from '@rneui/themed';
 
 import {useProduct} from '../../hooks/useProduct';
 
-type ProdType = 'BIO' | 'MACHINE' | '';
-
 export const FinishScreen = () => {
-  const {getType} = useProduct();
+  const {products, addData} = useProduct();
 
   const navigation = useNavigation<any>();
   const route: any = useRoute();
   const [code, setCode] = useState<string>('');
-  const [prevData, setPrevData] = useState<any>(null);
-  const [type, setType] = useState<ProdType>('');
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (route?.params?.code) {
-      setCode(route.params.code);
-      setPrevData(route.params.prevData);
-    }
-  }, [route.params]);
-
-  useEffect(() => {
-    if (code !== '') {
       (async () => {
-        const t = await getType(code);
-        setType(t || '');
+        setCode(route.params.code);
+        if (route.params.prevData) {
+          await addData(route.params.code, route.params.prevData);
+          setLoading(false);
+        } else {
+          setLoading(false);
+        }
       })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [code]);
+  }, [route.params]);
 
   const handleFinish = async () => {
-    const data = {...prevData};
-
-    console.log(data);
-
-    Alert.alert('INFO', 'Coming Soon');
-
-    // navigation.push('entityData', {
-    //   code: code,
-    //   prevData: data,
-    // });
+    await handleSaveData();
+    navigation.push('home');
   };
 
   const handleSymmetricalFinish = async () => {
-    const data = {...prevData};
+    await handleSaveData();
+    navigation.push('barcode', {
+      symmetricalTo: code,
+    });
+  };
 
-    console.log(data);
-
-    Alert.alert('INFO', 'Coming Soon');
-
-    // navigation.push('entityData', {
-    //   code: code,
-    //   prevData: data,
-    // });
+  const handleSaveData = async () => {
+    console.log('===== SAVING DATA TO SERVER =====');
+    console.log(products);
   };
 
   return (
-    <FullPage
-      title={type === 'BIO' ? 'PLANTS AND ANIMALS' : 'Machinery and Equipment'}
-      hasBackBtn={true}>
-      <View style={styles.container}>
-        <View style={styles.formArea}>
+    <FullPage title="FINISH" hasBackBtn={false}>
+      <View style={styles.centerContainer}>
+        <View style={styles.innerCircle}>
           <View>
             <Button
-              disabled={false}
+              disabled={loading}
               buttonStyle={[CommonStyles.buttonStyle, styles.button]}
               disabledStyle={CommonStyles.buttonDisabledStyle}
               containerStyle={CommonStyles.buttonContainerStyle}
@@ -78,10 +62,10 @@ export const FinishScreen = () => {
               title="FINISH"
               titleStyle={CommonStyles.buttonTitleStyle}
             />
-            <Text>OR</Text>
+            <Text style={styles.textStyle}>OR</Text>
             <Button
               type="clear"
-              disabled={false}
+              disabled={loading}
               buttonStyle={[CommonStyles.outLineButtonStyle, styles.button]}
               disabledStyle={CommonStyles.buttonDisabledStyle}
               containerStyle={CommonStyles.buttonContainerStyle}
@@ -97,16 +81,31 @@ export const FinishScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 50,
+  centerContainer: {
+    backgroundColor: Colors.gray_8,
+    height: Sizes.windowWidth * 0.9,
+    width: Sizes.windowWidth * 0.9,
+    borderRadius: Sizes.windowWidth * 0.9,
+    alignSelf: 'center',
+    marginTop: Sizes.windowHeight * 0.19,
+    alignContent: 'center',
+    justifyContent: 'center',
   },
-  formArea: {
-    paddingHorizontal: 20,
-    // width: Sizes.windowWidth * 0.7,
+  innerCircle: {
+    backgroundColor: Colors.gray_7,
+    height: Sizes.windowWidth * 0.7,
+    width: Sizes.windowWidth * 0.7,
+    borderRadius: Sizes.windowWidth * 0.7,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   button: {
-    width: Sizes.windowWidth * 0.87,
-    alignSelf: 'center',
-    marginTop: 10,
+    width: Sizes.windowWidth * 0.5,
+  },
+  textStyle: {
+    textAlign: 'center',
+    color: Colors.gray_1,
+    paddingTop: 15,
   },
 });
