@@ -11,6 +11,9 @@ export const CommonStyles = StyleSheet.create({
     height: 45,
     backgroundColor: '#fff',
   },
+  inputStyle: {
+    paddingHorizontal: 10,
+  },
   labelStyle: {
     fontWeight: 'normal',
     color: '#333',
@@ -39,5 +42,36 @@ export const CommonStyles = StyleSheet.create({
   },
   outlineBtnTextStyle: {
     color: Colors.primary_color_1,
+  },
+  ddPlaceholderStyle: {
+    color: '#999',
+    fontSize: 18,
+  },
+  ddContainerStyle: {
+    paddingHorizontal: 10,
+  },
+  ddStyle: {
+    borderColor: Colors.primary_color_1,
+    backgroundColor: '#fff',
+    minHeight: 45,
+    borderRadius: 2,
+  },
+  dropDownContainerStyle: {
+    borderColor: Colors.primary_color_1,
+    marginLeft: 10,
+  },
+  ddTitleText: {
+    color: Colors.gray_1,
+    paddingLeft: 12,
+    paddingBottom: 4,
+  },
+  ddLabelText: {
+    fontSize: 18,
+  },
+  ddErrorText: {
+    color: Colors.errorColor_1,
+    paddingLeft: 15,
+    paddingTop: 5,
+    fontSize: 12,
   },
 });

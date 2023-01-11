@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import FullPage from '../../components/layouts/full-page/FullPage';
 import {Sizes} from '../../assets/Theme';
@@ -7,7 +7,8 @@ import {CommonStyles} from '../../assets/CommonStyle';
 import {Button, Input} from '@rneui/themed';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import {useProduct} from '../../hooks/useProduct';
+import {useProduct, ProdType} from '../../hooks/useProduct';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const validation = Yup.object().shape({
   entityCode: Yup.string().required('Required'),
@@ -19,7 +20,10 @@ type FormValues = {
   entity: string;
 };
 
-type ProdType = 'BIO' | 'MACHINE' | '';
+type EntityType = {
+  label: string;
+  value: string;
+};
 
 export const EntityData = () => {
   const {getType} = useProduct();
@@ -27,8 +31,10 @@ export const EntityData = () => {
   const navigation = useNavigation<any>();
   const route: any = useRoute();
   const [code, setCode] = useState<string>('');
+  const [type, setType] = useState<ProdType | undefined>(undefined);
   const [prevData, setPrevData] = useState<any>(null);
-  const [type, setType] = useState<ProdType>('');
+  const [open, setOpen] = useState(false);
+  const [entities, setEntities] = useState<EntityType[]>([]);
 
   useEffect(() => {
     if (route?.params?.code) {
@@ -38,14 +44,50 @@ export const EntityData = () => {
   }, [route.params]);
 
   useEffect(() => {
-    if (code !== '') {
+    if (code) {
       (async () => {
         const t = await getType(code);
-        setType(t || '');
+        setType(t);
       })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code]);
+
+  useEffect(() => {
+    if (type) {
+      if (type === 'BIO') {
+        setEntities([
+          {label: 'Apple', value: 'apple'},
+          {label: 'Banana', value: 'banana'},
+        ]);
+      } else if (type === 'FURNITURE') {
+        setEntities([
+          {label: 'Chair', value: 'chair'},
+          {label: 'Table', value: 'table'},
+        ]);
+      } else if (type === 'INFRASTRUCTURE') {
+        setEntities([
+          {label: 'School', value: 'school'},
+          {label: 'Hospital', value: 'hospital'},
+        ]);
+      } else if (type === 'MACHINE') {
+        setEntities([
+          {label: 'Cellphone', value: 'phone'},
+          {label: 'Ear Pods', value: 'pods'},
+        ]);
+      } else if (type === 'TRANSPORT') {
+        setEntities([
+          {label: 'Bus', value: 'bus'},
+          {label: 'Car', value: 'car'},
+        ]);
+      } else if (type === 'UNEQUAL') {
+        setEntities([
+          {label: 'Something Big', value: 'big'},
+          {label: 'Something Small', value: 'small'},
+        ]);
+      }
+    }
+  }, [type]);
 
   const handleSubmitForm = async (values: FormValues) => {
     const data = {...prevData, ...values};
@@ -57,9 +99,7 @@ export const EntityData = () => {
   };
 
   return (
-    <FullPage
-      title={type === 'BIO' ? 'PLANTS AND ANIMALS' : 'Machinery and Equipment'}
-      hasBackBtn={true}>
+    <FullPage title={'ENTITY DATA'} hasBackBtn={true} disableScroll={true}>
       <View style={styles.container}>
         <View style={styles.formArea}>
           <Formik
@@ -79,37 +119,62 @@ export const EntityData = () => {
               touched,
             }) => (
               <View>
-                <Input
-                  disabled={false}
-                  disabledInputStyle={CommonStyles.disabledInputStyle}
-                  inputContainerStyle={CommonStyles.inputContainerStyle}
-                  errorMessage={
-                    touched.entityCode && errors.entityCode
-                      ? errors.entityCode
-                      : undefined
-                  }
-                  label="Entity Code"
-                  labelStyle={CommonStyles.labelStyle}
-                  placeholder="Entity Code"
-                  onBlur={() => setFieldTouched('entityCode')}
-                  onChangeText={value => setFieldValue('entityCode', value)}
-                  value={values.entityCode}
-                />
+                <View>
+                  <Text style={CommonStyles.ddTitleText}>Entity Name</Text>
+                  <DropDownPicker
+                    //loading={true}
+                    //searchable={true}
+                    key={'entity-name'}
+                    placeholder="Select Entity"
+                    placeholderStyle={CommonStyles.ddPlaceholderStyle}
+                    containerStyle={CommonStyles.ddContainerStyle}
+                    style={CommonStyles.ddStyle}
+                    dropDownContainerStyle={CommonStyles.dropDownContainerStyle}
+                    labelStyle={CommonStyles.ddLabelText}
+                    disabled={false}
+                    open={open}
+                    value={values.entity}
+                    items={entities}
+                    setOpen={val => {
+                      setOpen(val);
+                      if (!val) {
+                        setFieldTouched('entity');
+                      }
+                    }}
+                    setValue={fn => {
+                      const value = fn(values.entity);
+                      setFieldValue('entity', value);
+                      setFieldValue('entityCode', value);
+                    }}
+                    setItems={setEntities}
+                  />
+                  <Text style={CommonStyles.ddErrorText}>
+                    {touched.entity && errors.entity
+                      ? errors.entity
+                      : undefined}
+                  </Text>
+                </View>
 
-                <Input
-                  disabled={false}
-                  disabledInputStyle={CommonStyles.disabledInputStyle}
-                  inputContainerStyle={CommonStyles.inputContainerStyle}
-                  errorMessage={
-                    touched.entity && errors.entity ? errors.entity : undefined
-                  }
-                  label="Entity"
-                  labelStyle={CommonStyles.labelStyle}
-                  placeholder="Entity"
-                  onBlur={() => setFieldTouched('entity')}
-                  onChangeText={value => setFieldValue('entity', value)}
-                  value={values.entity}
-                />
+                <View style={styles.inputContainer}>
+                  <Input
+                    disabled={false}
+                    disabledInputStyle={CommonStyles.disabledInputStyle}
+                    inputContainerStyle={CommonStyles.inputContainerStyle}
+                    errorMessage={
+                      touched.entityCode && errors.entityCode
+                        ? errors.entityCode
+                        : undefined
+                    }
+                    label="Entity Code"
+                    labelStyle={CommonStyles.labelStyle}
+                    placeholder="Entity Code"
+                    onBlur={() => setFieldTouched('entityCode')}
+                    onChangeText={value => setFieldValue('entityCode', value)}
+                    value={values.entityCode}
+                    editable={false}
+                    style={CommonStyles.inputStyle}
+                  />
+                </View>
 
                 <View>
                   <Button
@@ -143,5 +208,8 @@ const styles = StyleSheet.create({
     width: Sizes.windowWidth * 0.87,
     alignSelf: 'center',
     marginTop: 10,
+  },
+  inputContainer: {
+    marginTop: 5,
   },
 });

@@ -1,5 +1,5 @@
 import React, {FC} from 'react';
-import {ScrollView, StatusBar, StyleSheet} from 'react-native';
+import {ScrollView, StatusBar, StyleSheet, View} from 'react-native';
 import {Colors, Sizes} from '../../../assets/Theme';
 import {Header as HeaderRNE, Icon} from '@rneui/themed';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -10,9 +10,10 @@ type Props = {
   title: string;
   children?: JSX.Element;
   hasBackBtn?: boolean;
+  disableScroll?: boolean;
 };
 
-const FullPage: FC<Props> = ({children, title, hasBackBtn}) => {
+const FullPage: FC<Props> = ({children, title, hasBackBtn, disableScroll}) => {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
   return (
     <>
@@ -39,11 +40,15 @@ const FullPage: FC<Props> = ({children, title, hasBackBtn}) => {
           )
         }
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={styles.container}>
-        {children}
-      </ScrollView>
+      {disableScroll ? (
+        <View style={styles.viewContainer}>{children}</View>
+      ) : (
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          style={styles.container}>
+          {children}
+        </ScrollView>
+      )}
     </>
   );
 };
@@ -53,7 +58,10 @@ export default FullPage;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.background,
-    // flex: 1,
+  },
+  viewContainer: {
+    backgroundColor: Colors.background,
+    flex: 1,
   },
   formArea: {
     paddingHorizontal: 20,

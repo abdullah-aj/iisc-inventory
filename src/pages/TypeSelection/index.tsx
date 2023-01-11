@@ -1,48 +1,69 @@
-import React from 'react';
-import {Alert, StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {Alert, StyleSheet, View} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import FullPage from '../../components/layouts/full-page/FullPage';
 import {Colors, Sizes} from '../../assets/Theme';
-import {ButtonGroup} from '@rneui/themed';
-import {useProduct} from '../../hooks/useProduct';
+import {Button} from '@rneui/themed';
+import {useProduct, ProdType} from '../../hooks/useProduct';
+import {CommonStyles} from '../../assets/CommonStyle';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 export const TypeSelection = () => {
   const navigation = useNavigation<any>();
   const route: any = useRoute();
   const {addType} = useProduct();
 
-  const handleBtnPress = async (index: number) => {
+  const [selectedProd, setSelectedProd] = useState<ProdType | ''>('');
+  const [open, setOpen] = useState(false);
+  const [typeList, setTypeList] = useState([
+    {label: 'Infrastructure', value: 'INFRASTRUCTURE'},
+    {label: 'Machinery and equipment', value: 'MACHINE'},
+    {label: 'Public transportation assets', value: 'TRANSPORT'},
+    {label: 'Furniture', value: 'FURNITURE'},
+    {label: 'plants and animals', value: 'BIO'},
+    {label: 'Unequal assets', value: 'UNEQUAL'},
+  ]);
+
+  const handleBtnPress = async () => {
     if (route?.params?.code) {
-      if (index === 0) {
-        await addType(route.params.code, 'BIO');
-      } else {
-        await addType(route.params.code, 'MACHINE');
-      }
+      await addType(route.params.code, selectedProd as ProdType);
       navigation.push('entityData', {code: route.params.code});
     } else {
       Alert.alert('ERROR', 'Barcode has not been set properly');
     }
   };
 
-  const buttons = [
-    {element: () => <Text>Plants and Animals</Text>},
-    {element: () => <Text>Machinery and Equipment</Text>},
-  ];
-
   return (
-    <FullPage title="ADD DETAILS" hasBackBtn={true}>
-      <View style={styles.container}>
-        <View style={styles.formArea}>
+    <FullPage title="ADD DETAILS" hasBackBtn={true} disableScroll={true}>
+      <View style={styles.centerContainer}>
+        <View style={styles.innerCircle}>
           <View>
-            <ButtonGroup
-              onPress={i => handleBtnPress(i)}
-              selectedIndex={null}
-              buttons={buttons}
-              containerStyle={styles.btnContainerStyle}
-              buttonContainerStyle={styles.buttonContainerStyle}
-              selectedButtonStyle={styles.selectedButtonStyle}
+            <DropDownPicker
+              key={'entity-type'}
+              placeholder="Select Entity Type"
+              placeholderStyle={CommonStyles.ddPlaceholderStyle}
+              containerStyle={CommonStyles.ddContainerStyle}
+              style={[CommonStyles.ddStyle, styles.ddStyle]}
+              dropDownContainerStyle={CommonStyles.dropDownContainerStyle}
+              labelStyle={CommonStyles.ddLabelText}
+              disabled={false}
+              open={open}
+              value={selectedProd}
+              items={typeList}
+              setOpen={setOpen}
+              setValue={setSelectedProd}
+              setItems={setTypeList}
             />
           </View>
+          <Button
+            disabled={selectedProd === ''}
+            buttonStyle={[CommonStyles.buttonStyle, styles.button]}
+            disabledStyle={CommonStyles.buttonDisabledStyle}
+            containerStyle={CommonStyles.buttonContainerStyle}
+            onPress={handleBtnPress}
+            title="NEXT"
+            titleStyle={CommonStyles.buttonTitleStyle}
+          />
         </View>
       </View>
     </FullPage>
@@ -50,20 +71,31 @@ export const TypeSelection = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 50,
+  centerContainer: {
+    backgroundColor: Colors.gray_8,
+    height: Sizes.windowWidth * 0.9,
+    width: Sizes.windowWidth * 0.9,
+    borderRadius: Sizes.windowWidth * 0.9,
+    alignSelf: 'center',
+    marginTop: Sizes.windowHeight * 0.19,
+    alignContent: 'center',
+    justifyContent: 'center',
   },
-  buttonContainerStyle: {
-    backgroundColor: Colors.primary_color_1,
+  innerCircle: {
+    backgroundColor: Colors.gray_7,
+    height: Sizes.windowWidth * 0.7,
+    width: Sizes.windowWidth * 0.7,
+    borderRadius: Sizes.windowWidth * 0.7,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  selectedButtonStyle: {
-    backgroundColor: '#ad4040',
+  button: {
+    width: Sizes.windowWidth * 0.6,
+    alignSelf: 'center',
+    marginTop: 10,
   },
-  formArea: {
-    paddingHorizontal: 20,
-    marginTop: Sizes.windowHeight * 0.26,
-  },
-  btnContainerStyle: {
-    height: 80,
+  ddStyle: {
+    width: Sizes.windowWidth * 0.6,
   },
 });

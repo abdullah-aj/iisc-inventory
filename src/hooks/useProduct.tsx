@@ -42,7 +42,13 @@ type imageType = {
   path: string;
 };
 
-type ProdType = 'BIO' | 'MACHINE';
+export type ProdType =
+  | 'BIO'
+  | 'MACHINE'
+  | 'INFRASTRUCTURE'
+  | 'TRANSPORT'
+  | 'FURNITURE'
+  | 'UNEQUAL';
 
 export type Product = {
   barcode: string;
