@@ -1,13 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {Alert, StyleSheet, View} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import FullPage from '../../components/layouts/full-page/FullPage';
-import {Sizes} from '../../assets/Theme';
+import {Sizes, Colors} from '../../assets/Theme';
 import {CommonStyles} from '../../assets/CommonStyle';
 import {Button, Input} from '@rneui/themed';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import {useProduct} from '../../hooks/useProduct';
+import {useProduct, ProdType} from '../../hooks/useProduct';
+import Geolocation from '@react-native-community/geolocation';
+import {Text} from '@rneui/base';
 
 const validation = Yup.object().shape({
   // coordinates: '',
@@ -34,7 +36,10 @@ type FormValues = {
   country: string;
 };
 
-type ProdType = 'BIO' | 'MACHINE' | '';
+type LocationType = {
+  longitude: number;
+  latitude: number;
+};
 
 export const GeoData = () => {
   const {getType} = useProduct();
@@ -43,7 +48,9 @@ export const GeoData = () => {
   const route: any = useRoute();
   const [code, setCode] = useState<string>('');
   const [prevData, setPrevData] = useState<any>(null);
-  const [type, setType] = useState<ProdType>('');
+  const [type, setType] = useState<ProdType | undefined>();
+  const [geoPermission, setGeoPermission] = useState<boolean>(false);
+  const [location, setLocation] = useState<LocationType>();
 
   useEffect(() => {
     if (route?.params?.code) {
@@ -54,30 +61,60 @@ export const GeoData = () => {
 
   useEffect(() => {
     if (code !== '') {
+      getLocationPermission();
       (async () => {
         const t = await getType(code);
-        setType(t || '');
+        setType(t);
       })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code]);
 
-  const handleSubmitForm = async (values: FormValues) => {
-    const data = {...prevData, ...values};
-    if (type === 'BIO') {
-      delete data.floor;
-      delete data.building;
-      delete data.room;
-      navigation.push('bioData', {
-        code: code,
-        prevData: data,
-      });
-    } else {
-      navigation.push('machineData', {
-        code: code,
-        prevData: data,
+  useEffect(() => {
+    if (geoPermission) {
+      Geolocation.getCurrentPosition(info => {
+        setLocation({
+          latitude: info.coords.latitude,
+          longitude: info.coords.longitude,
+        });
       });
     }
+  }, [geoPermission]);
+
+  const handleSubmitForm = async (values: FormValues) => {
+    if (location?.longitude) {
+      const data = {...prevData, ...values};
+      if (type === 'BIO') {
+        delete data.floor;
+        delete data.building;
+        delete data.room;
+        navigation.push('bioData', {
+          code: code,
+          prevData: data,
+        });
+      } else {
+        navigation.push('machineData', {
+          code: code,
+          prevData: data,
+        });
+      }
+    } else {
+      Alert.alert('ERROR', 'Device Location is Required to Continue');
+    }
+  };
+
+  const getLocationPermission = () => {
+    Geolocation.setRNConfiguration({
+      skipPermissionRequests: false,
+      authorizationLevel: 'whenInUse',
+      locationProvider: 'auto',
+    });
+
+    Geolocation.requestAuthorization(
+      () => setGeoPermission(true),
+      ({message}) =>
+        Alert.alert('ERROR', 'Location Permission is Required' + message),
+    );
   };
 
   return (
@@ -109,22 +146,20 @@ export const GeoData = () => {
               touched,
             }) => (
               <View>
-                <Input
-                  disabled={false}
-                  disabledInputStyle={CommonStyles.disabledInputStyle}
-                  inputContainerStyle={CommonStyles.inputContainerStyle}
-                  errorMessage={
-                    touched.coordinates && errors.coordinates
-                      ? errors.coordinates
-                      : undefined
-                  }
-                  label="Geographical Coordinates"
-                  labelStyle={CommonStyles.labelStyle}
-                  placeholder="Geographical Coordinates"
-                  onBlur={() => setFieldTouched('coordinates')}
-                  onChangeText={value => setFieldValue('coordinates', value)}
-                  value={values.coordinates}
-                />
+                {location?.longitude ? (
+                  <Text style={styles.locationText}>
+                    Device Location Obtained
+                  </Text>
+                ) : (
+                  <Button
+                    buttonStyle={styles.locationButton}
+                    title={'Request Device Location'}
+                    type={'clear'}
+                    onPress={getLocationPermission}
+                    titleStyle={styles.locationButtonTitleStyle}
+                    containerStyle={styles.locationContainer}
+                  />
+                )}
 
                 <Input
                   disabled={false}
@@ -264,11 +299,26 @@ const styles = StyleSheet.create({
   },
   formArea: {
     paddingHorizontal: 20,
-    // width: Sizes.windowWidth * 0.7,
   },
   button: {
     width: Sizes.windowWidth * 0.87,
     alignSelf: 'center',
     marginTop: 10,
+  },
+  locationText: {
+    paddingBottom: 20,
+    paddingLeft: 10,
+    fontSize: 18,
+    marginTop: -20,
+    color: Colors.primary_color_2,
+  },
+  locationContainer: {
+    width: Sizes.windowWidth * 0.45,
+    marginTop: -20,
+  },
+  locationButton: {},
+  locationButtonTitleStyle: {
+    color: Colors.primary_color_1,
+    paddingBottom: 10,
   },
 });

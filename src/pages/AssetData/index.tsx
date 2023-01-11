@@ -7,7 +7,7 @@ import {CommonStyles} from '../../assets/CommonStyle';
 import {Button, Input} from '@rneui/themed';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import {useProduct} from '../../hooks/useProduct';
+import {useProduct, ProdType} from '../../hooks/useProduct';
 
 const validation = Yup.object().shape({
   // custodian: '',
@@ -32,8 +32,6 @@ type FormValues = {
   assetNumber: string;
 };
 
-type ProdType = 'BIO' | 'MACHINE' | '';
-
 export const AssetData = () => {
   const {getType} = useProduct();
 
@@ -41,7 +39,7 @@ export const AssetData = () => {
   const route: any = useRoute();
   const [code, setCode] = useState<string>('');
   const [prevData, setPrevData] = useState<any>(null);
-  const [type, setType] = useState<ProdType>('');
+  const [type, setType] = useState<ProdType | undefined>(undefined);
 
   useEffect(() => {
     if (route?.params?.code) {
@@ -53,8 +51,8 @@ export const AssetData = () => {
   useEffect(() => {
     if (code !== '') {
       (async () => {
-        const t = await getType(code);
-        setType(t || '');
+        const t: ProdType | undefined = await getType(code);
+        setType(t);
       })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,9 +71,7 @@ export const AssetData = () => {
   };
 
   return (
-    <FullPage
-      title={type === 'BIO' ? 'PLANTS AND ANIMALS' : 'Machinery and Equipment'}
-      hasBackBtn={true}>
+    <FullPage title={'ASSET DATA'} hasBackBtn={true}>
       <View style={styles.container}>
         <View style={styles.formArea}>
           <Formik
