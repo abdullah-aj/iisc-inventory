@@ -66,7 +66,7 @@ export const AssetData = () => {
       delete data.factoryId;
     }
 
-    navigation.push('entityData', {
+    navigation.push('geoData', {
       code: code,
       prevData: data,
     });

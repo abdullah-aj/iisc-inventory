@@ -68,12 +68,16 @@ export const GeoData = () => {
       delete data.floor;
       delete data.building;
       delete data.room;
+      navigation.push('bioData', {
+        code: code,
+        prevData: data,
+      });
+    } else {
+      navigation.push('machineData', {
+        code: code,
+        prevData: data,
+      });
     }
-
-    navigation.push('assetData', {
-      code: code,
-      prevData: data,
-    });
   };
 
   return (

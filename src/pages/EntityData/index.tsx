@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import FullPage from '../../components/layouts/full-page/FullPage';
 import {Sizes} from '../../assets/Theme';
@@ -50,33 +50,10 @@ export const EntityData = () => {
   const handleSubmitForm = async (values: FormValues) => {
     const data = {...prevData, ...values};
 
-    navigation.push('finishScreen', {
+    navigation.push('assetData', {
       code: code,
       prevData: data,
     });
-  };
-
-  const handleCancel = () => {
-    Alert.alert(
-      'Warning',
-      'This will remove all the data entered for current entity. \n\nContinue?',
-      [
-        {
-          text: 'No',
-          onPress: () => {
-            console.log('DO NOT CANCEL');
-          },
-          style: 'cancel',
-        },
-        {
-          text: 'Yes',
-          onPress: () => {
-            console.log('CANCELED PRESSED');
-          },
-          style: 'default',
-        },
-      ],
-    );
   };
 
   return (
@@ -141,21 +118,8 @@ export const EntityData = () => {
                     disabledStyle={CommonStyles.buttonDisabledStyle}
                     containerStyle={CommonStyles.buttonContainerStyle}
                     onPress={handleSubmit}
-                    title="SAVE"
+                    title="NEXT"
                     titleStyle={CommonStyles.buttonTitleStyle}
-                  />
-                  <Button
-                    type="outline"
-                    disabled={isSubmitting}
-                    buttonStyle={[
-                      CommonStyles.outLineButtonStyle,
-                      styles.button,
-                    ]}
-                    disabledStyle={CommonStyles.buttonDisabledStyle}
-                    containerStyle={CommonStyles.buttonContainerStyle}
-                    onPress={handleCancel}
-                    title="CANCEL"
-                    titleStyle={CommonStyles.outlineBtnTextStyle}
                   />
                 </View>
               </View>

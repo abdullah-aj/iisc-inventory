@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {Alert, StyleSheet, View} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import FullPage from '../../components/layouts/full-page/FullPage';
 import {Sizes} from '../../assets/Theme';
@@ -34,18 +34,45 @@ export const MachineData = () => {
   const navigation = useNavigation<any>();
   const route: any = useRoute();
   const [code, setCode] = useState<string>('');
+  const [prevData, setPrevData] = useState<any>(null);
 
   useEffect(() => {
     if (route?.params?.code) {
       setCode(route.params.code);
+      setPrevData(route.params.prevData);
     }
   }, [route.params]);
 
   const handleSubmitForm = async (values: FormValues) => {
-    navigation.push('geoData', {
+    const data = {...prevData, ...values};
+
+    navigation.push('finishScreen', {
       code: code,
-      prevData: values,
+      prevData: data,
     });
+  };
+
+  const handleCancel = () => {
+    Alert.alert(
+      'Warning',
+      'This will remove all the data entered for current entity. \n\nContinue?',
+      [
+        {
+          text: 'No',
+          onPress: () => {
+            console.log('DO NOT CANCEL');
+          },
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: () => {
+            console.log('CANCELED PRESSED');
+          },
+          style: 'default',
+        },
+      ],
+    );
   };
 
   return (
@@ -204,6 +231,20 @@ export const MachineData = () => {
                     title="NEXT"
                     titleStyle={CommonStyles.buttonTitleStyle}
                   />
+                  <Button
+                    type="outline"
+                    disabled={isSubmitting}
+                    buttonStyle={[
+                      CommonStyles.outLineButtonStyle,
+                      styles.button,
+                      styles.lastBtn,
+                    ]}
+                    disabledStyle={CommonStyles.buttonDisabledStyle}
+                    containerStyle={CommonStyles.buttonContainerStyle}
+                    onPress={handleCancel}
+                    title="CANCEL"
+                    titleStyle={CommonStyles.outlineBtnTextStyle}
+                  />
                 </View>
               </View>
             )}
@@ -226,5 +267,8 @@ const styles = StyleSheet.create({
     width: Sizes.windowWidth * 0.87,
     alignSelf: 'center',
     marginTop: 10,
+  },
+  lastBtn: {
+    marginBottom: 20,
   },
 });

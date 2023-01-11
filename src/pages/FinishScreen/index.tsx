@@ -32,20 +32,16 @@ export const FinishScreen = () => {
   }, [route.params]);
 
   const handleFinish = async () => {
-    await handleSaveData();
+    console.log('===== SAVING DATA TO SERVER =====');
+    console.log(products);
     navigation.push('home');
   };
 
   const handleSymmetricalFinish = async () => {
-    await handleSaveData();
+    // Symmetrical Finish will not save data to server
     navigation.push('barcode', {
       symmetricalTo: code,
     });
-  };
-
-  const handleSaveData = async () => {
-    console.log('===== SAVING DATA TO SERVER =====');
-    console.log(products);
   };
 
   return (

@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React from 'react';
+import {Alert, StyleSheet, Text, View} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import FullPage from '../../components/layouts/full-page/FullPage';
 import {Colors, Sizes} from '../../assets/Theme';
@@ -7,29 +7,20 @@ import {ButtonGroup} from '@rneui/themed';
 import {useProduct} from '../../hooks/useProduct';
 
 export const TypeSelection = () => {
-  const [selected, setSelected] = useState(null);
   const navigation = useNavigation<any>();
   const route: any = useRoute();
   const {addType} = useProduct();
 
-  useEffect(() => {
-    if (selected !== null) {
-      selected === 0 ? navigateBio() : navigateMachine();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selected]);
-
-  const navigateBio = async () => {
+  const handleBtnPress = async (index: number) => {
     if (route?.params?.code) {
-      await addType(route.params.code, 'BIO');
-      navigation.push('bioData', {code: route.params.code});
-    }
-  };
-
-  const navigateMachine = async () => {
-    if (route?.params?.code) {
-      await addType(route.params.code, 'MACHINE');
-      navigation.push('machineData', {code: route.params.code});
+      if (index === 0) {
+        await addType(route.params.code, 'BIO');
+      } else {
+        await addType(route.params.code, 'MACHINE');
+      }
+      navigation.push('entityData', {code: route.params.code});
+    } else {
+      Alert.alert('ERROR', 'Barcode has not been set properly');
     }
   };
 
@@ -44,8 +35,8 @@ export const TypeSelection = () => {
         <View style={styles.formArea}>
           <View>
             <ButtonGroup
-              onPress={i => setSelected(i)}
-              selectedIndex={selected}
+              onPress={i => handleBtnPress(i)}
+              selectedIndex={null}
               buttons={buttons}
               containerStyle={styles.btnContainerStyle}
               buttonContainerStyle={styles.buttonContainerStyle}
