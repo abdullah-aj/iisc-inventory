@@ -5,11 +5,6 @@ import {useAuth} from '../../hooks/useAuth';
 import {Colors, Sizes} from '../../assets/Theme';
 import {CommonStyles} from '../../assets/CommonStyle';
 
-// type User = {
-//   username: string;
-//   password: string;
-// };
-
 export const Login = () => {
   const {loginAction} = useAuth();
 
@@ -21,15 +16,11 @@ export const Login = () => {
 
   const handleLogin = async () => {
     setLoading(true);
-    setTimeout(() => {
-      if (email.toUpperCase() === 'USER' && password.toUpperCase() === 'USER') {
-        loginAction({username: 'Hello User'});
-      } else {
-        setErrorEmail('Email or user name is not valid');
-        setErrorPassword('Password is not valid');
-      }
+
+    if ((await loginAction({username: email, password: password})) === false) {
       setLoading(false);
-    }, 1000);
+      setErrorPassword('Invalid username or password');
+    }
   };
 
   return (

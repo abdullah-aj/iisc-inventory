@@ -7,8 +7,9 @@ import {CommonStyles} from '../../assets/CommonStyle';
 import {Button, Input} from '@rneui/themed';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import {useProduct, ProdType} from '../../hooks/useProduct';
 import DropDownPicker from 'react-native-dropdown-picker';
+import axios from 'axios';
+import {API_URL} from '../../utils/constants';
 
 const validation = Yup.object().shape({
   entityCode: Yup.string().required('Required'),
@@ -26,12 +27,9 @@ type EntityType = {
 };
 
 export const EntityData = () => {
-  const {getType} = useProduct();
-
   const navigation = useNavigation<any>();
   const route: any = useRoute();
   const [code, setCode] = useState<string>('');
-  const [type, setType] = useState<ProdType | undefined>(undefined);
   const [prevData, setPrevData] = useState<any>(null);
   const [open, setOpen] = useState(false);
   const [entities, setEntities] = useState<EntityType[]>([]);
@@ -46,48 +44,28 @@ export const EntityData = () => {
   useEffect(() => {
     if (code) {
       (async () => {
-        const t = await getType(code);
-        setType(t);
+        const data = await getEntities();
+        if (data.rows && data.total > 0) {
+          const ent = data.rows.map((item: any) => ({
+            value: item.id,
+            label: item.name,
+          }));
+          setEntities(ent);
+        }
       })();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code]);
 
-  useEffect(() => {
-    if (type) {
-      if (type === 'BIO') {
-        setEntities([
-          {label: 'Apple', value: 'apple'},
-          {label: 'Banana', value: 'banana'},
-        ]);
-      } else if (type === 'FURNITURE') {
-        setEntities([
-          {label: 'Chair', value: 'chair'},
-          {label: 'Table', value: 'table'},
-        ]);
-      } else if (type === 'INFRASTRUCTURE') {
-        setEntities([
-          {label: 'School', value: 'school'},
-          {label: 'Hospital', value: 'hospital'},
-        ]);
-      } else if (type === 'MACHINE') {
-        setEntities([
-          {label: 'Cellphone', value: 'phone'},
-          {label: 'Ear Pods', value: 'pods'},
-        ]);
-      } else if (type === 'TRANSPORT') {
-        setEntities([
-          {label: 'Bus', value: 'bus'},
-          {label: 'Car', value: 'car'},
-        ]);
-      } else if (type === 'UNEQUAL') {
-        setEntities([
-          {label: 'Something Big', value: 'big'},
-          {label: 'Something Small', value: 'small'},
-        ]);
-      }
+  const getEntities = async (): Promise<any> => {
+    try {
+      const res = await axios.get(`${API_URL}/companies`);
+      return res.data;
+    } catch (e: any) {
+      console.log('==== ERROR IN GET ENTITIES ====');
+      console.log(e.message);
+      return false;
     }
-  }, [type]);
+  };
 
   const handleSubmitForm = async (values: FormValues) => {
     const data = {...prevData, ...values};
@@ -122,7 +100,7 @@ export const EntityData = () => {
                 <View>
                   <Text style={CommonStyles.ddTitleText}>Entity Name</Text>
                   <DropDownPicker
-                    //loading={true}
+                    loading={entities.length === 0}
                     //searchable={true}
                     key={'entity-name'}
                     placeholder="Select Entity"
@@ -144,7 +122,7 @@ export const EntityData = () => {
                     setValue={fn => {
                       const value = fn(values.entity);
                       setFieldValue('entity', value);
-                      setFieldValue('entityCode', value);
+                      setFieldValue('entityCode', `${value}`);
                     }}
                     setItems={setEntities}
                   />
@@ -168,8 +146,8 @@ export const EntityData = () => {
                     label="Entity Code"
                     labelStyle={CommonStyles.labelStyle}
                     placeholder="Entity Code"
-                    onBlur={() => setFieldTouched('entityCode')}
-                    onChangeText={value => setFieldValue('entityCode', value)}
+                    //onBlur={() => setFieldTouched('entityCode')}
+                    //onChangeText={value => setFieldValue('entityCode', value)}
                     value={values.entityCode}
                     editable={false}
                     style={CommonStyles.inputStyle}
