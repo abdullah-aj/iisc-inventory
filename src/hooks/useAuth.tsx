@@ -56,28 +56,22 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
   // call this function when you want to authenticate the user
   const loginAction = async (data: UserType) => {
     axios.defaults.headers.common['Authorization'] = `Bearer ${TOKEN}`;
-    axios.defaults.headers.common['accept'] = 'application/json';
-    axios.defaults.headers.common['Content-Type'] = 'application/json';
-
     const res = await axios.post(`${API_URL}/account/login`, {
       username: data.username,
       password: data.password,
     });
-    console.log({
-      username: data.username,
-      password: data.password,
-    });
-    console.log(res?.data?.token);
 
     if (res?.data?.success === false) {
       return Promise.resolve(false);
-    } else {
-      axios.defaults.headers.common[
-        'Authorization'
-      ] = `Bearer ${res?.data?.token}`;
-      setUser({...data, token: res?.data?.token});
-      await setItem(JSON.stringify(data));
+    } else if (res?.data?.success === true) {
+      const tk = res?.data?.token;
+      // axios.defaults.headers.common['Authorization'] = `Bearer ${tk}`;
+      const dd = {...data, token: tk};
+      setUser(dd);
+      await setItem(JSON.stringify(dd));
       return Promise.resolve(true);
+    } else {
+      return Promise.reject(false);
     }
   };
 

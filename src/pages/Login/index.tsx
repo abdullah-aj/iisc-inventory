@@ -38,31 +38,25 @@ export const Login = () => {
               disabledInputStyle={CommonStyles.disabledInputStyle}
               inputContainerStyle={CommonStyles.inputContainerStyle}
               errorMessage={errorEmail}
-              errorStyle={{}}
-              errorProps={{}}
-              inputStyle={{}}
-              label="Email"
+              label="Username"
               labelStyle={CommonStyles.labelStyle}
-              labelProps={{}}
-              placeholder="Enter Email"
+              placeholder="Enter username"
               onChangeText={value => {
                 setErrorEmail('');
                 setEmail(value);
               }}
+              keyboardType={'visible-password'}
             />
 
             <Input
+              secureTextEntry={true}
               disabled={loading}
               disabledInputStyle={CommonStyles.disabledInputStyle}
               inputContainerStyle={CommonStyles.inputContainerStyle}
               errorMessage={errorPassword}
-              errorStyle={{}}
-              errorProps={{}}
-              inputStyle={{}}
               label="Password"
               labelStyle={CommonStyles.labelStyle}
-              labelProps={{}}
-              placeholder="Password"
+              placeholder="Enter Password"
               onChangeText={value => {
                 setErrorPassword('');
                 setPassword(value);
