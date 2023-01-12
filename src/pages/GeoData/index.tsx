@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, StyleSheet, View} from 'react-native';
+import {Alert, StyleSheet, View, Linking} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import FullPage from '../../components/layouts/full-page/FullPage';
 import {Sizes, Colors} from '../../assets/Theme';
@@ -21,7 +21,7 @@ const validation = Yup.object().shape({
   // region: '',
   // country: '',
 
-  coordinates: Yup.string().required('Required'),
+  // coordinates: Yup.string().required('Required'),
   zip: Yup.string().required('Required'),
 });
 
@@ -112,15 +112,24 @@ export const GeoData = () => {
 
     Geolocation.requestAuthorization(
       () => setGeoPermission(true),
-      ({message}) =>
-        Alert.alert('ERROR', 'Location Permission is Required' + message),
+      ({message}) => {
+        console.log(message);
+        Alert.alert(
+          'ERROR',
+          'Go to Settings and allow location permission for this app',
+          [
+            {
+              text: 'Go to Settings',
+              onPress: () => Linking.openSettings(),
+            },
+          ],
+        );
+      },
     );
   };
 
   return (
-    <FullPage
-      title={type === 'BIO' ? 'PLANTS AND ANIMALS' : 'Machinery and Equipment'}
-      hasBackBtn={true}>
+    <FullPage title={'Geographical Data'} hasBackBtn={true}>
       <View style={styles.container}>
         <View style={styles.formArea}>
           <Formik
@@ -153,7 +162,7 @@ export const GeoData = () => {
                 ) : (
                   <Button
                     buttonStyle={styles.locationButton}
-                    title={'Request Device Location'}
+                    title={'** Request Device Location **'}
                     type={'clear'}
                     onPress={getLocationPermission}
                     titleStyle={styles.locationButtonTitleStyle}
@@ -174,6 +183,7 @@ export const GeoData = () => {
                   onBlur={() => setFieldTouched('zip')}
                   onChangeText={value => setFieldValue('zip', value)}
                   value={values.zip}
+                  keyboardType="number-pad"
                 />
 
                 {type === 'MACHINE' && (
@@ -205,6 +215,7 @@ export const GeoData = () => {
                       onBlur={() => setFieldTouched('floor')}
                       onChangeText={value => setFieldValue('floor', value)}
                       value={values.floor}
+                      keyboardType="number-pad"
                     />
 
                     <Input
@@ -313,7 +324,7 @@ const styles = StyleSheet.create({
     color: Colors.primary_color_2,
   },
   locationContainer: {
-    width: Sizes.windowWidth * 0.45,
+    // width: Sizes.windowWidth * 0.45,
     marginTop: -20,
   },
   locationButton: {},

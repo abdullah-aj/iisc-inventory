@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Alert, StyleSheet, Text, View} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import FullPage from '../../components/layouts/full-page/FullPage';
 import {Sizes, Colors} from '../../assets/Theme';
@@ -9,7 +9,7 @@ import {Button} from '@rneui/themed';
 import {useProduct} from '../../hooks/useProduct';
 
 export const FinishScreen = () => {
-  const {products, addData} = useProduct();
+  const {addData, submitData} = useProduct();
 
   const navigation = useNavigation<any>();
   const route: any = useRoute();
@@ -33,8 +33,13 @@ export const FinishScreen = () => {
 
   const handleFinish = async () => {
     console.log('===== SAVING DATA TO SERVER =====');
-    console.log(products);
-    navigation.push('home');
+    const res = await submitData();
+    if (res) {
+      console.log(res);
+      // navigation.push('home');
+    } else {
+      Alert.alert('ERROR', 'some error in saving');
+    }
   };
 
   const handleSymmetricalFinish = async () => {

@@ -154,6 +154,7 @@ export const MachineData = () => {
                     setFieldValue('yearOfManufacture', value)
                   }
                   value={values.yearOfManufacture}
+                  keyboardType="number-pad"
                 />
 
                 <Input

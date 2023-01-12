@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import FullPage from '../../components/layouts/full-page/FullPage';
 import {Sizes} from '../../assets/Theme';
@@ -8,6 +8,8 @@ import {Button, Input} from '@rneui/themed';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {useProduct, ProdType} from '../../hooks/useProduct';
+import DropDownPicker from 'react-native-dropdown-picker';
+import {MEASURE_UNITS} from '../../utils/constants';
 
 const validation = Yup.object().shape({
   // custodian: '',
@@ -40,6 +42,7 @@ export const AssetData = () => {
   const [code, setCode] = useState<string>('');
   const [prevData, setPrevData] = useState<any>(null);
   const [type, setType] = useState<ProdType | undefined>(undefined);
+  const [unitDdOpen, setUnitDdOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (route?.params?.code) {
@@ -129,6 +132,7 @@ export const AssetData = () => {
                     onBlur={() => setFieldTouched('factoryId')}
                     onChangeText={value => setFieldValue('factoryId', value)}
                     value={values.factoryId}
+                    keyboardType={'number-pad'}
                   />
                 )}
 
@@ -147,23 +151,45 @@ export const AssetData = () => {
                   onBlur={() => setFieldTouched('quantity')}
                   onChangeText={value => setFieldValue('quantity', value)}
                   value={values.quantity}
+                  keyboardType={'number-pad'}
                 />
-                <Input
-                  disabled={false}
-                  disabledInputStyle={CommonStyles.disabledInputStyle}
-                  inputContainerStyle={CommonStyles.inputContainerStyle}
-                  errorMessage={
-                    touched.baseUnit && errors.baseUnit
+
+                <View>
+                  <Text style={CommonStyles.ddTitleText}>
+                    Base Unit of Measure
+                  </Text>
+                  <DropDownPicker
+                    listMode="SCROLLVIEW"
+                    //loading={false}
+                    searchable={true}
+                    key={'measure-unit'}
+                    placeholder="Select Measure Unit"
+                    placeholderStyle={CommonStyles.ddPlaceholderStyle}
+                    containerStyle={CommonStyles.ddContainerStyle}
+                    style={CommonStyles.ddStyle}
+                    dropDownContainerStyle={CommonStyles.dropDownContainerStyle}
+                    labelStyle={CommonStyles.ddLabelText}
+                    disabled={false}
+                    open={unitDdOpen}
+                    value={values.baseUnit}
+                    items={MEASURE_UNITS}
+                    setOpen={val => {
+                      setUnitDdOpen(val);
+                      if (!val) {
+                        setFieldTouched('baseUnit');
+                      }
+                    }}
+                    setValue={fn => {
+                      const value = fn(values.baseUnit);
+                      setFieldValue('baseUnit', value);
+                    }}
+                  />
+                  <Text style={CommonStyles.ddErrorText}>
+                    {touched.baseUnit && errors.baseUnit
                       ? errors.baseUnit
-                      : undefined
-                  }
-                  label="Base Unit of Measure"
-                  labelStyle={CommonStyles.labelStyle}
-                  placeholder="Base Unit of Measure"
-                  onBlur={() => setFieldTouched('baseUnit')}
-                  onChangeText={value => setFieldValue('baseUnit', value)}
-                  value={values.baseUnit}
-                />
+                      : undefined}
+                  </Text>
+                </View>
 
                 <Input
                   disabled={false}
@@ -180,6 +206,7 @@ export const AssetData = () => {
                   onBlur={() => setFieldTouched('tagNumber')}
                   onChangeText={value => setFieldValue('tagNumber', value)}
                   value={values.tagNumber}
+                  keyboardType="number-pad"
                 />
 
                 <Input
@@ -216,6 +243,7 @@ export const AssetData = () => {
                   onBlur={() => setFieldTouched('assetNumber')}
                   onChangeText={value => setFieldValue('assetNumber', value)}
                   value={values.assetNumber}
+                  keyboardType="number-pad"
                 />
 
                 <View>
