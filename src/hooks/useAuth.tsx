@@ -13,6 +13,7 @@ import {STORAGE_KEY} from '../utils/constants';
 import {PRODUCT_KEY} from './useProduct';
 import axios from 'axios';
 import {API_URL, TOKEN} from '../utils/constants';
+import RNRestart from 'react-native-restart';
 
 export type UserType = {
   username: string;
@@ -82,6 +83,7 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
     await AsyncStorage.clear();
     await AsyncStorage.removeItem(USER_DATA_KEY);
     await AsyncStorage.removeItem(PRODUCT_KEY);
+    RNRestart.Restart();
   };
 
   const value = useMemo(

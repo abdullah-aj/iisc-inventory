@@ -1,5 +1,6 @@
+/* eslint-disable curly */
 import React, {useEffect, useState} from 'react';
-import {Alert, StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, Alert, StyleSheet, Text, View} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import FullPage from '../../components/layouts/full-page/FullPage';
 import {Sizes, Colors} from '../../assets/Theme';
@@ -7,9 +8,11 @@ import {CommonStyles} from '../../assets/CommonStyle';
 import {Button} from '@rneui/themed';
 
 import {useProduct} from '../../hooks/useProduct';
+import axios from 'axios';
+import {API_URL} from '../../utils/constants';
 
 export const FinishScreen = () => {
-  const {addData, submitData} = useProduct();
+  const {addData, products, updateAfterSubmit} = useProduct();
 
   const navigation = useNavigation<any>();
   const route: any = useRoute();
@@ -32,13 +35,37 @@ export const FinishScreen = () => {
   }, [route.params]);
 
   const handleFinish = async () => {
-    console.log('===== SAVING DATA TO SERVER =====');
-    const res = await submitData();
-    if (res) {
-      console.log(res);
-      // navigation.push('home');
+    setLoading(true);
+    const res = await saveData();
+    let toUpdate = [...products];
+    for (let i = res.length - 1; i >= 0; i--) {
+      if (res[i] === true) {
+        toUpdate.splice(i, 1);
+      }
+    }
+
+    updateAfterSubmit([...toUpdate]);
+    const fail = res.filter(item => item === false);
+    if (fail.length) {
+      Alert.alert(
+        'ERROR',
+        `There were ${res.length} assets to save, and ${fail.length} assets encountered error
+        \nSystem will try to save again when you will save next asset
+        \nIf you continue to see this error, try to re-sign in to the App and try again`,
+        [
+          {
+            text: 'OK',
+            onPress: () => navigation.push('home'),
+          },
+        ],
+      );
     } else {
-      Alert.alert('ERROR', 'some error in saving');
+      Alert.alert('SUCCESS', `${res.length} assets saved successfully`, [
+        {
+          text: 'OK',
+          onPress: () => navigation.push('home'),
+        },
+      ]);
     }
   };
 
@@ -49,31 +76,180 @@ export const FinishScreen = () => {
     });
   };
 
+  const saveData = async () => {
+    return await Promise.all(
+      await products.map(async product => {
+        const formData = new FormData();
+        // product.image?.map((img, imgIndx) => {
+        //   formData.append('images[]', {
+        //     uri: img.path,
+        //     type: 'image/jpeg',
+        //     name: `image-${img.id}-${imgIndx}`,
+        //   });
+        // });
+        if (product.barcode) formData.append('asset_tag', product.barcode);
+        if (product.data?.custodian)
+          formData.append('custodian', product.data?.custodian);
+        if (product.data?.uniqueFactoryId)
+          formData.append(
+            'unique_asset_number_entity',
+            product.data?.uniqueFactoryId,
+          );
+        if (product.data?.quantity)
+          formData.append('quantity', product.data?.quantity);
+        if (product.data?.baseUnitOfMeasure)
+          formData.append('base_unit', product.data?.baseUnitOfMeasure);
+        if (product.data?.assetDescription)
+          formData.append(
+            'asset_description_for_maintenance_purpose_english',
+            product.data?.assetDescription,
+          );
+        if (product.data?.geographicalCoordinates?.latitude)
+          formData.append(
+            'lat',
+            product.data?.geographicalCoordinates?.latitude,
+          );
+
+        if (product.data?.geographicalCoordinates?.longitude)
+          formData.append(
+            'lng',
+            product.data?.geographicalCoordinates?.longitude,
+          );
+
+        if (product.data?.zipCode)
+          formData.append('ZIP_code', product.data?.zipCode);
+        if (product.data?.roomNumber)
+          formData.append('room_number', product.data?.roomNumber);
+        if (product.data?.floorNumber)
+          formData.append('floors_number', product.data?.floorNumber);
+        if (product.data?.buildingNumber)
+          formData.append('building_number', product.data?.buildingNumber);
+        if (product.data?.city) formData.append('city', product.data?.city);
+        if (product.data?.region)
+          formData.append('region', product.data?.region);
+        if (product.data?.country)
+          formData.append('country', product.data?.country);
+        if (product.data?.gender)
+          formData.append('gender', product.data?.gender);
+        if (product.data?.productionCapacity)
+          formData.append(
+            'production_capacity',
+            product.data?.productionCapacity,
+          );
+        if (product.data?.purpose)
+          formData.append('purpose', product.data?.purpose);
+        if (product.data?.stageInBiologicalCycle)
+          formData.append(
+            'stage_biological_cycle',
+            product.data?.stageInBiologicalCycle,
+          );
+        if (product.data?.biologicalAge)
+          formData.append('biological_age', product.data?.biologicalAge);
+        if (product.data?.usefulLife)
+          formData.append('useful_life', product.data?.usefulLife);
+        if (product.data?.material)
+          formData.append('material', product.data?.material);
+        if (product.data?.plateNumber)
+          formData.append('plate_number', product.data?.plateNumber);
+        if (product.data?.yearOfManufacture)
+          formData.append(
+            'year_of_manufacture',
+            product.data?.yearOfManufacture,
+          );
+        if (product.data?.manufactureSerialNumber)
+          formData.append(
+            'manufacturer_serial_number',
+            product.data?.manufactureSerialNumber,
+          );
+        if (product.data?.countryOfOrigin)
+          formData.append('country_of_origin', product.data?.countryOfOrigin);
+        if (product.data?.model) formData.append('model', product.data?.model);
+        if (product.data?.manufacturer)
+          formData.append('manufacturer', product.data?.manufacturer);
+        if (product.data?.entityCode)
+          formData.append('company_id', product.data?.entityCode);
+        if (product.data?.serialNumber)
+          formData.append('serial_number', product.data?.serialNumber);
+        if (product.data?.assetUtilization)
+          formData.append('asset_Utilization', product.data?.assetUtilization);
+        if (product.data?.programLicense)
+          formData.append('programme_license', product.data?.programLicense);
+        if (product.data?.licenseExpiration)
+          formData.append(
+            'license_expiration_date',
+            product.data?.licenseExpiration,
+          );
+        if (product.data?.reasonForIndefinite)
+          formData.append(
+            'reasons_for_indefinite',
+            product.data?.reasonForIndefinite,
+          );
+        if (product.data?.version)
+          formData.append('version', product.data?.version);
+        if (product.data?.version)
+          formData.append('version', product.data?.version);
+        formData.append('accounting_id', 1);
+
+        try {
+          const response = await axios.post(`${API_URL}/hardware`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+
+          if (response.data.status === 'error') {
+            console.log(response.data);
+            return false;
+          } else {
+            console.log('==============');
+            console.log(response.data);
+            console.log('==============');
+            return true;
+          }
+        } catch (error: any) {
+          console.log(error.message);
+          return false;
+        }
+
+        /*
+        uniqueAssetNumber?: string;
+      */
+      }),
+    );
+  };
+
   return (
     <FullPage title="FINISH" hasBackBtn={false}>
       <View style={styles.centerContainer}>
         <View style={styles.innerCircle}>
           <View>
-            <Button
-              disabled={loading}
-              buttonStyle={[CommonStyles.buttonStyle, styles.button]}
-              disabledStyle={CommonStyles.buttonDisabledStyle}
-              containerStyle={CommonStyles.buttonContainerStyle}
-              onPress={handleFinish}
-              title="FINISH"
-              titleStyle={CommonStyles.buttonTitleStyle}
-            />
-            <Text style={styles.textStyle}>OR</Text>
-            <Button
-              type="clear"
-              disabled={loading}
-              buttonStyle={[CommonStyles.outLineButtonStyle, styles.button]}
-              disabledStyle={CommonStyles.buttonDisabledStyle}
-              containerStyle={CommonStyles.buttonContainerStyle}
-              onPress={handleSymmetricalFinish}
-              title="ADD SYMMETRICAL ASSET"
-              titleStyle={CommonStyles.outlineBtnTextStyle}
-            />
+            {loading ? (
+              <ActivityIndicator
+                color={Colors.primary_color_1}
+                size={'large'}
+              />
+            ) : (
+              <>
+                <Button
+                  buttonStyle={[CommonStyles.buttonStyle, styles.button]}
+                  disabledStyle={CommonStyles.buttonDisabledStyle}
+                  containerStyle={CommonStyles.buttonContainerStyle}
+                  onPress={handleFinish}
+                  title="FINISH"
+                  titleStyle={CommonStyles.buttonTitleStyle}
+                />
+                <Text style={styles.textStyle}>OR</Text>
+                <Button
+                  type="clear"
+                  buttonStyle={[CommonStyles.outLineButtonStyle, styles.button]}
+                  disabledStyle={CommonStyles.buttonDisabledStyle}
+                  containerStyle={CommonStyles.buttonContainerStyle}
+                  onPress={handleSymmetricalFinish}
+                  title="ADD SYMMETRICAL ASSET"
+                  titleStyle={CommonStyles.outlineBtnTextStyle}
+                />
+              </>
+            )}
           </View>
         </View>
       </View>

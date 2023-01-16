@@ -10,7 +10,7 @@ export const Home = () => {
   const navigation = useNavigation<any>();
 
   const handleAddAsset = () => {
-    navigation.push('barcode');
+    navigation.push('typeSelection');
   };
 
   return (

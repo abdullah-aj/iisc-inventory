@@ -28,7 +28,7 @@ export const ProductImageList = () => {
         code: route?.params?.code,
       });
     } else {
-      navigation.push('typeSelection', {code: route?.params?.code});
+      navigation.push('entityData', {code: route?.params?.code});
     }
   };
 

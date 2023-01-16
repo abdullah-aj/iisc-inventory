@@ -1,17 +1,18 @@
-import React, {useState} from 'react';
-import {Alert, StyleSheet, View} from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import FullPage from '../../components/layouts/full-page/FullPage';
 import {Colors, Sizes} from '../../assets/Theme';
 import {Button} from '@rneui/themed';
-import {useProduct, ProdType} from '../../hooks/useProduct';
+import {ProdType, useProduct} from '../../hooks/useProduct';
 import {CommonStyles} from '../../assets/CommonStyle';
 import DropDownPicker from 'react-native-dropdown-picker';
 
+const DATE = Date.now();
+
 export const TypeSelection = () => {
   const navigation = useNavigation<any>();
-  const route: any = useRoute();
-  const {addType} = useProduct();
+  const {addBarcode} = useProduct();
 
   const [selectedProd, setSelectedProd] = useState<ProdType | ''>('');
   const [open, setOpen] = useState(false);
@@ -21,17 +22,29 @@ export const TypeSelection = () => {
     {label: 'Public transportation assets', value: 'TRANSPORT'},
     {label: 'Furniture', value: 'FURNITURE'},
     {label: 'plants and animals', value: 'BIO'},
-    {label: 'Unequal assets', value: 'UNEQUAL'},
+    {label: 'Intangible assets', value: 'INTANGIBLE'},
   ]);
+  const [fakeCode, setFakeCode] = useState('');
 
   const handleBtnPress = async () => {
-    if (route?.params?.code) {
-      await addType(route.params.code, selectedProd as ProdType);
-      navigation.push('entityData', {code: route.params.code});
+    if (selectedProd === 'INTANGIBLE') {
+      addBarcode(`${DATE}`, selectedProd);
+      setFakeCode(`${DATE}`);
+      // navigate after product state update in useEffect
     } else {
-      Alert.alert('ERROR', 'Barcode has not been set properly');
+      navigation.push('barcode', {type: selectedProd});
     }
   };
+
+  useEffect(() => {
+    if (fakeCode) {
+      navigation.push('productImageList', {
+        code: fakeCode,
+        type: selectedProd,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fakeCode]);
 
   return (
     <FullPage title="ADD DETAILS" hasBackBtn={true} disableScroll={true}>
@@ -53,6 +66,7 @@ export const TypeSelection = () => {
               setOpen={setOpen}
               setValue={setSelectedProd}
               setItems={setTypeList}
+              maxHeight={250}
             />
           </View>
           <Button

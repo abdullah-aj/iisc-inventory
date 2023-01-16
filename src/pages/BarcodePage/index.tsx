@@ -1,6 +1,6 @@
 import {Button} from '@rneui/base';
-import React, {useState} from 'react';
-import {Image, StyleSheet, View, Linking} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Image, StyleSheet, View, Linking, Alert} from 'react-native';
 import {Sizes} from '../../assets/Theme';
 import FullPage from '../../components/layouts/full-page/FullPage';
 import {CommonStyles} from '../../assets/CommonStyle';
@@ -11,13 +11,17 @@ import {BarcodeScanner} from '../../components/BarcodeScanner/BarcodeScanner';
 import {Barcode} from 'vision-camera-code-scanner';
 import {useProduct} from '../../hooks/useProduct';
 import {useNavigation, useRoute} from '@react-navigation/native';
+import {Input} from '@rneui/themed';
 
 export const BarcodePage = () => {
   const route: any = useRoute();
   const navigation = useNavigation<any>();
-  const {addBarcode} = useProduct();
+  const {addBarcode, getType} = useProduct();
 
   const [openScanner, setOpenScanner] = useState(false);
+  const [barCode, setBarCode] = useState('');
+  const [scannerUsed, setScannerUsed] = useState(false);
+  const [updateCheck, setUpdateCheck] = useState(false);
 
   const handleBarcodeScan = async () => {
     let cameraPermission = await Camera.getCameraPermissionStatus();
@@ -52,19 +56,40 @@ export const BarcodePage = () => {
       });
     } else if (code.length === 1) {
       const val = code[0].displayValue || '';
-      addBarcode(val);
+      setBarCode(val);
+      setScannerUsed(true);
+    }
+  };
+
+  const handleNextClick = () => {
+    if (route?.params?.type) {
+      addBarcode(barCode, route.params.type);
+      setUpdateCheck(true);
+      // navigate after product state update in useEffect
+    } else if (route?.params?.symmetricalTo) {
+      const type = getType(route.params.symmetricalTo.type);
+      addBarcode(barCode, type);
+      setUpdateCheck(true);
+    } else {
+      Alert.alert('ERROR', 'There was an error, Please try again');
+    }
+  };
+
+  useEffect(() => {
+    if (updateCheck) {
       if (route?.params?.symmetricalTo) {
         navigation.push('productImageList', {
-          code: val,
+          code: barCode,
           symmetricalTo: route.params.symmetricalTo,
         });
       } else {
         navigation.push('productImageList', {
-          code: val,
+          code: barCode,
         });
       }
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateCheck]);
 
   return (
     <>
@@ -83,13 +108,36 @@ export const BarcodePage = () => {
                 />
               </View>
             </BorderBox>
+            <View style={styles.manualBarcode}>
+              <Input
+                value={barCode}
+                disabled={false}
+                disabledInputStyle={CommonStyles.disabledInputStyle}
+                inputContainerStyle={CommonStyles.inputContainerStyle}
+                errorMessage={''}
+                label="Barcode"
+                labelStyle={CommonStyles.labelStyle}
+                placeholder="Manually Enter Barcode"
+                onChangeText={setBarCode}
+                keyboardType={'number-pad'}
+              />
+            </View>
             <View>
               <Button
                 buttonStyle={[CommonStyles.buttonStyle, styles.button]}
                 disabledStyle={CommonStyles.buttonDisabledStyle}
                 containerStyle={CommonStyles.buttonContainerStyle}
                 onPress={handleBarcodeScan}
-                title="SCAN"
+                title={scannerUsed ? 'SCAN AGAIN' : 'SCAN'}
+                titleStyle={CommonStyles.buttonTitleStyle}
+              />
+              <Button
+                disabled={!barCode}
+                buttonStyle={[CommonStyles.buttonStyle, styles.button]}
+                disabledStyle={CommonStyles.buttonDisabledStyle}
+                containerStyle={CommonStyles.buttonContainerStyle}
+                onPress={handleNextClick}
+                title="NEXT"
                 titleStyle={CommonStyles.buttonTitleStyle}
               />
             </View>
@@ -105,9 +153,9 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   button: {
-    width: Sizes.windowWidth * 0.7,
+    width: Sizes.windowWidth * 0.72,
     alignSelf: 'center',
-    marginTop: 50,
+    marginTop: 0,
   },
   codeContainer: {
     alignContent: 'center',
@@ -117,5 +165,10 @@ const styles = StyleSheet.create({
   barcodeImg: {
     width: Sizes.windowWidth * 0.5,
     resizeMode: 'contain',
+  },
+  manualBarcode: {
+    width: Sizes.windowWidth * 0.77,
+    alignSelf: 'center',
+    marginTop: 20,
   },
 });
