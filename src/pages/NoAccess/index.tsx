@@ -5,8 +5,8 @@ import {
   Image,
   StatusBar,
   Text,
-  Linking,
-  TouchableOpacity,
+  // Linking,
+  // TouchableOpacity,
 } from 'react-native';
 import {Colors, Sizes} from '../../assets/Theme';
 
@@ -22,13 +22,13 @@ export const NoAccess = () => {
           />
           <View style={styles.textContainer}>
             <Text style={styles.errorText}>ERROR!</Text>
-            <Text style={styles.textStyle}>Please contact</Text>
+            {/* <Text style={styles.textStyle}>Please contact</Text>
             <TouchableOpacity
               onPress={() => {
                 Linking.openURL('https://www.sohoby.com');
               }}>
               <Text style={styles.sohobyTextStyle}>SOHOBY</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
       </View>
