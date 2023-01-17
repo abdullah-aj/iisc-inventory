@@ -76,7 +76,7 @@ export const CaptureImage = () => {
     setOpenCamera(false);
     const {path, type} = image;
     if (route?.params?.code) {
-      const uri = await saveImage(path, type);
+      const uri = `file://${path}`; //await saveImage(path, type);
       if (uri) {
         setImageSource({uri: uri});
         addImage(route.params.code, {id: route.params.id, path: uri});

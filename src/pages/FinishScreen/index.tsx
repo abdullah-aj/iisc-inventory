@@ -38,20 +38,28 @@ export const FinishScreen = () => {
     setLoading(true);
     const res = await saveData();
     let toUpdate = [...products];
+    let failedCodes = [];
     for (let i = res.length - 1; i >= 0; i--) {
       if (res[i] === true) {
         toUpdate.splice(i, 1);
+      } else {
+        failedCodes.push(toUpdate[i].barcode);
       }
     }
 
-    updateAfterSubmit([...toUpdate]);
+    //updateAfterSubmit([...toUpdate]);
+    updateAfterSubmit([]);
     const fail = res.filter(item => item === false);
     if (fail.length) {
       Alert.alert(
         'ERROR',
-        `There were ${res.length} assets to save, and ${fail.length} assets encountered error
-        \nSystem will try to save again when you will save next asset
-        \nIf you continue to see this error, try to re-sign in to the App and try again`,
+        `There were ${res.length} assets to save, and ${
+          fail.length
+        } assets encountered errors
+        \n\nFollowing Bar-Codes encountered an error while saving
+        \n${failedCodes.join('\n')}
+        \nData of Failed bar-Codes have been deleted. You can try again with fresh data
+        \nIf the error persists, then contact Administrator`,
         [
           {
             text: 'OK',
@@ -80,13 +88,13 @@ export const FinishScreen = () => {
     return await Promise.all(
       await products.map(async product => {
         const formData = new FormData();
-        // product.image?.map((img, imgIndx) => {
-        //   formData.append('images[]', {
-        //     uri: img.path,
-        //     type: 'image/jpeg',
-        //     name: `image-${img.id}-${imgIndx}`,
-        //   });
-        // });
+        product.image?.map(async (img, i) => {
+          formData.append(`image${i === 0 ? '' : i + 1}`, {
+            uri: img.path,
+            type: 'image/jpeg',
+            name: `image-${img.id}-${i + 1}.jpg`,
+          });
+        });
         if (product.barcode) formData.append('asset_tag', product.barcode);
         if (product.data?.custodian)
           formData.append('custodian', product.data?.custodian);
@@ -196,18 +204,19 @@ export const FinishScreen = () => {
               'Content-Type': 'multipart/form-data',
             },
           });
-
           if (response.data.status === 'error') {
             console.log(response.data);
+            console.log('=== ERROR FROM SERVER ===');
             return false;
           } else {
-            console.log('==============');
             console.log(response.data);
-            console.log('==============');
+            console.log('=== SUCCESS ===');
             return true;
           }
         } catch (error: any) {
-          console.log(error.message);
+          console.log('=== ERROR IN CATCH ===');
+          console.log('ERROR RESPONSE: ', error.response);
+          console.log('ERROR MESSAGE: ', error.message);
           return false;
         }
 
