@@ -16,7 +16,6 @@ const validation = Yup.object().shape({
   // factoryId: '',
   // quantity: '',
   // baseUnit: '',
-  // tagNumber: '',
   // assetDescription: '',
   // assetNumber: '',
 
@@ -29,7 +28,6 @@ type FormValues = {
   factoryId: string;
   quantity: string;
   baseUnit: string;
-  tagNumber: string;
   assetDescription: string;
   assetNumber: string;
 };
@@ -63,7 +61,19 @@ export const AssetData = () => {
 
   const handleSubmitForm = async (values: FormValues) => {
     const data = {...prevData, ...values};
-    if (type === 'BIO') {
+
+    if (type === 'INTANGIBLE') {
+      delete data.uniqueFactoryId;
+      navigation.push('intangibleData', {
+        code: code,
+        prevData: data,
+      });
+      return;
+    } else if (
+      type === 'BIO' ||
+      type === 'INFRASTRUCTURE' ||
+      type === 'FURNITURE'
+    ) {
       delete data.factoryId;
     }
 
@@ -83,7 +93,6 @@ export const AssetData = () => {
               factoryId: '',
               quantity: '',
               baseUnit: '',
-              tagNumber: '',
               assetDescription: '',
               assetNumber: '',
             }}
@@ -116,25 +125,26 @@ export const AssetData = () => {
                   value={values.custodian}
                 />
 
-                {type === 'MACHINE' && (
-                  <Input
-                    disabled={false}
-                    disabledInputStyle={CommonStyles.disabledInputStyle}
-                    inputContainerStyle={CommonStyles.inputContainerStyle}
-                    errorMessage={
-                      touched.factoryId && errors.factoryId
-                        ? errors.factoryId
-                        : undefined
-                    }
-                    label="Unique Factory ID"
-                    labelStyle={CommonStyles.labelStyle}
-                    placeholder="Asset Serial Number"
-                    onBlur={() => setFieldTouched('factoryId')}
-                    onChangeText={value => setFieldValue('factoryId', value)}
-                    value={values.factoryId}
-                    keyboardType={'number-pad'}
-                  />
-                )}
+                {type === 'MACHINE' ||
+                  (type === 'TRANSPORT' && (
+                    <Input
+                      disabled={false}
+                      disabledInputStyle={CommonStyles.disabledInputStyle}
+                      inputContainerStyle={CommonStyles.inputContainerStyle}
+                      errorMessage={
+                        touched.factoryId && errors.factoryId
+                          ? errors.factoryId
+                          : undefined
+                      }
+                      label="Unique Factory ID"
+                      labelStyle={CommonStyles.labelStyle}
+                      placeholder="Asset Serial Number"
+                      onBlur={() => setFieldTouched('factoryId')}
+                      onChangeText={value => setFieldValue('factoryId', value)}
+                      value={values.factoryId}
+                      keyboardType={'number-pad'}
+                    />
+                  ))}
 
                 <Input
                   disabled={false}
@@ -190,24 +200,6 @@ export const AssetData = () => {
                       : undefined}
                   </Text>
                 </View>
-
-                <Input
-                  disabled={false}
-                  disabledInputStyle={CommonStyles.disabledInputStyle}
-                  inputContainerStyle={CommonStyles.inputContainerStyle}
-                  errorMessage={
-                    touched.tagNumber && errors.tagNumber
-                      ? errors.tagNumber
-                      : undefined
-                  }
-                  label="Tag Number"
-                  labelStyle={CommonStyles.labelStyle}
-                  placeholder="Tag Number"
-                  onBlur={() => setFieldTouched('tagNumber')}
-                  onChangeText={value => setFieldValue('tagNumber', value)}
-                  value={values.tagNumber}
-                  keyboardType="number-pad"
-                />
 
                 <Input
                   disabled={false}

@@ -92,11 +92,22 @@ export const GeoData = () => {
           code: code,
           prevData: data,
         });
-      } else {
+      } else if (type === 'FURNITURE') {
+        navigation.push('finishScreen', {
+          code: code,
+          prevData: data,
+        });
+      } else if (
+        type === 'INFRASTRUCTURE' ||
+        type === 'MACHINE' ||
+        type === 'TRANSPORT'
+      ) {
         navigation.push('machineData', {
           code: code,
           prevData: data,
         });
+      } else {
+        Alert.alert('ERROR', 'Invalid Asset Type');
       }
     } else {
       Alert.alert('ERROR', 'Device Location is Required to Continue');

@@ -7,6 +7,7 @@ import {CommonStyles} from '../../assets/CommonStyle';
 import {Button, Input} from '@rneui/themed';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
+import {ProdType, useProduct} from '../../hooks/useProduct';
 
 const validation = Yup.object().shape({
   // material: '',
@@ -35,6 +36,8 @@ export const MachineData = () => {
   const route: any = useRoute();
   const [code, setCode] = useState<string>('');
   const [prevData, setPrevData] = useState<any>(null);
+  const [type, setType] = useState<ProdType | undefined>(undefined);
+  const {getType} = useProduct();
 
   useEffect(() => {
     if (route?.params?.code) {
@@ -43,8 +46,21 @@ export const MachineData = () => {
     }
   }, [route.params]);
 
+  useEffect(() => {
+    if (code !== '') {
+      (async () => {
+        const t: ProdType | undefined = await getType(code);
+        setType(t);
+      })();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [code]);
+
   const handleSubmitForm = async (values: FormValues) => {
     const data = {...prevData, ...values};
+    if (type !== 'TRANSPORT') {
+      delete data.serialNumber;
+    }
 
     navigation.push('finishScreen', {
       code: code,
@@ -156,23 +172,24 @@ export const MachineData = () => {
                   value={values.yearOfManufacture}
                   keyboardType="number-pad"
                 />
-
-                <Input
-                  disabled={false}
-                  disabledInputStyle={CommonStyles.disabledInputStyle}
-                  inputContainerStyle={CommonStyles.inputContainerStyle}
-                  errorMessage={
-                    touched.serialNumber && errors.serialNumber
-                      ? errors.serialNumber
-                      : undefined
-                  }
-                  label="Manufacture Serial Number"
-                  labelStyle={CommonStyles.labelStyle}
-                  placeholder="Manufacture Serial Number"
-                  onBlur={() => setFieldTouched('serialNumber')}
-                  onChangeText={value => setFieldValue('serialNumber', value)}
-                  value={values.serialNumber}
-                />
+                {type === 'TRANSPORT' && (
+                  <Input
+                    disabled={false}
+                    disabledInputStyle={CommonStyles.disabledInputStyle}
+                    inputContainerStyle={CommonStyles.inputContainerStyle}
+                    errorMessage={
+                      touched.serialNumber && errors.serialNumber
+                        ? errors.serialNumber
+                        : undefined
+                    }
+                    label="Manufacture Serial Number"
+                    labelStyle={CommonStyles.labelStyle}
+                    placeholder="Manufacture Serial Number"
+                    onBlur={() => setFieldTouched('serialNumber')}
+                    onChangeText={value => setFieldValue('serialNumber', value)}
+                    value={values.serialNumber}
+                  />
+                )}
 
                 <Input
                   disabled={false}

@@ -12,6 +12,7 @@ import {AssetData} from '../../pages/AssetData';
 import {EntityData} from '../../pages/EntityData';
 import {FinishScreen} from '../../pages/FinishScreen';
 import {MachineData} from '../../pages/MachineData';
+import {IntangibleData} from '../../pages/IntangibleData';
 
 const StackNavigation: React.FC = () => {
   const Stack = createNativeStackNavigator();
@@ -33,6 +34,7 @@ const StackNavigation: React.FC = () => {
         <Stack.Screen name={'entityData'} component={EntityData} />
         <Stack.Screen name={'finishScreen'} component={FinishScreen} />
         <Stack.Screen name={'machineData'} component={MachineData} />
+        <Stack.Screen name={'intangibleData'} component={IntangibleData} />
       </Stack.Navigator>
     </>
   );
