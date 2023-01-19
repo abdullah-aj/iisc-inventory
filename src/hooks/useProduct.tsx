@@ -62,6 +62,9 @@ type ProductData = {
   // Entity Data
   entityCode?: string;
   entity?: string;
+
+  // extra
+  assetCondition?: string;
 };
 
 type imageType = {
