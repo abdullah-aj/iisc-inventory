@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import FullPage from '../../components/layouts/full-page/FullPage';
 import {Colors, Sizes} from '../../assets/Theme';
 import {Button} from '@rneui/themed';
@@ -12,6 +12,7 @@ const DATE = Date.now();
 
 export const TypeSelection = () => {
   const navigation = useNavigation<any>();
+  const route = useRoute<any>();
   const {addBarcode} = useProduct();
 
   const [selectedProd, setSelectedProd] = useState<ProdType | ''>('');
@@ -25,6 +26,7 @@ export const TypeSelection = () => {
     {label: 'Intangible assets', value: 'INTANGIBLE'},
   ]);
   const [fakeCode, setFakeCode] = useState('');
+  const [prevData, setPrevData] = useState<any>(null);
 
   const handleBtnPress = async () => {
     if (selectedProd === 'INTANGIBLE') {
@@ -32,7 +34,7 @@ export const TypeSelection = () => {
       setFakeCode(`${DATE}`);
       // navigate after product state update in useEffect
     } else {
-      navigation.push('barcode', {type: selectedProd});
+      navigation.push('barcode', {type: selectedProd, prevData: prevData});
     }
   };
 
@@ -41,19 +43,26 @@ export const TypeSelection = () => {
       navigation.push('productImageList', {
         code: fakeCode,
         type: selectedProd,
+        prevData: prevData,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fakeCode]);
 
+  useEffect(() => {
+    if (route?.params?.prevData) {
+      setPrevData(route.params.prevData);
+    }
+  }, [route.params]);
+
   return (
-    <FullPage title="ADD DETAILS" hasBackBtn={true} disableScroll={true}>
+    <FullPage title="ASSET TYPE" hasBackBtn={true} disableScroll={true}>
       <View style={styles.centerContainer}>
         <View style={styles.innerCircle}>
           <View>
             <DropDownPicker
-              key={'entity-type'}
-              placeholder="Select Entity Type"
+              key={'asset-type'}
+              placeholder="Select Asset Type"
               placeholderStyle={CommonStyles.ddPlaceholderStyle}
               containerStyle={CommonStyles.ddContainerStyle}
               style={[CommonStyles.ddStyle, styles.ddStyle]}

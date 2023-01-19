@@ -9,7 +9,7 @@ import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {useProduct, ProdType} from '../../hooks/useProduct';
 import DropDownPicker from 'react-native-dropdown-picker';
-import {MEASURE_UNITS} from '../../utils/constants';
+import {MEASURE_UNITS, ASSET_CONDITION} from '../../utils/constants';
 
 const validation = Yup.object().shape({
   // custodian: '',
@@ -30,6 +30,7 @@ type FormValues = {
   baseUnitOfMeasure: string;
   assetDescription: string;
   uniqueAssetNumber: string;
+  assetCondition: string;
 };
 
 export const AssetData = () => {
@@ -41,6 +42,7 @@ export const AssetData = () => {
   const [prevData, setPrevData] = useState<any>(null);
   const [type, setType] = useState<ProdType | undefined>(undefined);
   const [unitDdOpen, setUnitDdOpen] = useState<boolean>(false);
+  const [conditionDdOpen, setConditionDdOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (route?.params?.code) {
@@ -95,6 +97,7 @@ export const AssetData = () => {
               baseUnitOfMeasure: '',
               assetDescription: '',
               uniqueAssetNumber: '',
+              assetCondition: '',
             }}
             validationSchema={validation}
             onSubmit={handleSubmitForm}>
@@ -241,6 +244,40 @@ export const AssetData = () => {
                   value={values.uniqueAssetNumber}
                   keyboardType="number-pad"
                 />
+
+                <View>
+                  <Text style={CommonStyles.ddTitleText}>Asset Condition</Text>
+                  <DropDownPicker
+                    listMode="SCROLLVIEW"
+                    key={'asset-condition'}
+                    placeholder="Select Asset Condition"
+                    placeholderStyle={CommonStyles.ddPlaceholderStyle}
+                    containerStyle={CommonStyles.ddContainerStyle}
+                    style={CommonStyles.ddStyle}
+                    dropDownContainerStyle={CommonStyles.dropDownContainerStyle}
+                    labelStyle={CommonStyles.ddLabelText}
+                    disabled={false}
+                    open={conditionDdOpen}
+                    value={values.assetCondition}
+                    items={ASSET_CONDITION}
+                    setOpen={val => {
+                      setConditionDdOpen(val);
+                      if (!val) {
+                        setFieldTouched('assetCondition');
+                      }
+                    }}
+                    setValue={fn => {
+                      const value = fn(values.assetCondition);
+                      setFieldValue('assetCondition', value);
+                    }}
+                    dropDownDirection={'TOP'}
+                  />
+                  <Text style={CommonStyles.ddErrorText}>
+                    {touched.assetCondition && errors.assetCondition
+                      ? errors.assetCondition
+                      : undefined}
+                  </Text>
+                </View>
 
                 <View>
                   <Button

@@ -28,7 +28,10 @@ export const ProductImageList = () => {
         code: route?.params?.code,
       });
     } else {
-      navigation.push('entityData', {code: route?.params?.code});
+      navigation.push('assetData', {
+        code: route?.params?.code,
+        prevData: route.params.prevData,
+      });
     }
   };
 

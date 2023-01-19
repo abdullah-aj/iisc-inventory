@@ -36,36 +36,43 @@ type ProductData = {
   programLicense?: string;
   version?: string;
 
-  // Geographical Location
+  // Geographical Location => not in 6
   geographicalCoordinates?: {
-    // not-in 6
     latitude: string;
     longitude: string;
   };
-  zipCode?: string; // not-in 6
-  roomNumber?: string; // not-in 5, 6
-  floorNumber?: string; // not-in 5, 6
-  buildingNumber?: string; // not-in 5, 6
-  city?: string; // not-in 6
-  region?: string; // not-in 6
-  country?: string; // not-in 6
+  zipCode?: string;
+  roomNumber?: string; // not-in 5
+  floorNumber?: string; // not-in 5
+  buildingNumber?: string; // not-in 5
+  city?: string;
+  region?: string;
+  country?: string;
 
   // Asset Identification
   custodian?: string;
-  uniqueFactoryId?: string; // not-in 6, 5, 4, 1
+  uniqueFactoryId?: string; // only-in 2, 3
   quantity?: number;
   baseUnitOfMeasure?: string;
-  tagNumber?: string; // not-in 6, // barcode
+  tagNumber?: string; // not-in 6 => barcode
   assetDescription?: string;
   uniqueAssetNumber?: string;
+  // extra
+  assetCondition?: string; // not-in 6
 
   // Entity Data
   entityCode?: string;
   entity?: string;
-
-  // extra
-  assetCondition?: string;
 };
+
+/*
+  1: D- Infrastructure
+  2: E- Machinery and equipment
+  3: f- Public transportation assets
+  4: g- Furniture
+  5: h- The origins of plants and animals
+  6: i- Intangible assets
+*/
 
 type imageType = {
   id: number;

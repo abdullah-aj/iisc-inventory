@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import FullPage from '../../components/layouts/full-page/FullPage';
 import {Sizes} from '../../assets/Theme';
 import {CommonStyles} from '../../assets/CommonStyle';
@@ -28,33 +28,21 @@ type EntityType = {
 
 export const EntityData = () => {
   const navigation = useNavigation<any>();
-  const route: any = useRoute();
-  const [code, setCode] = useState<string>('');
-  const [prevData, setPrevData] = useState<any>(null);
   const [open, setOpen] = useState(false);
   const [entities, setEntities] = useState<EntityType[]>([]);
 
   useEffect(() => {
-    if (route?.params?.code) {
-      setCode(route.params.code);
-      setPrevData(route.params.prevData);
-    }
-  }, [route.params]);
-
-  useEffect(() => {
-    if (code) {
-      (async () => {
-        const data = await getEntities();
-        if (data.rows && data.total > 0) {
-          const ent = data.rows.map((item: any) => ({
-            value: item.id,
-            label: item.name,
-          }));
-          setEntities(ent);
-        }
-      })();
-    }
-  }, [code]);
+    (async () => {
+      const data = await getEntities();
+      if (data.rows && data.total > 0) {
+        const ent = data.rows.map((item: any) => ({
+          value: item.id,
+          label: item.name,
+        }));
+        setEntities(ent);
+      }
+    })();
+  }, []);
 
   const getEntities = async (): Promise<any> => {
     try {
@@ -68,16 +56,14 @@ export const EntityData = () => {
   };
 
   const handleSubmitForm = async (values: FormValues) => {
-    const data = {...prevData, ...values};
-
-    navigation.push('assetData', {
-      code: code,
+    const data = {...values};
+    navigation.push('typeSelection', {
       prevData: data,
     });
   };
 
   return (
-    <FullPage title={'ENTITY DATA'} hasBackBtn={true} disableScroll={true}>
+    <FullPage title={'ENTITY DATA'} hasBackBtn={true}>
       <View style={styles.container}>
         <View style={styles.formArea}>
           <Formik
@@ -101,6 +87,7 @@ export const EntityData = () => {
                   <Text style={CommonStyles.ddTitleText}>Entity Name</Text>
                   <DropDownPicker
                     loading={entities.length === 0}
+                    listMode="SCROLLVIEW"
                     //searchable={true}
                     key={'entity-name'}
                     placeholder="Select Entity"
@@ -135,7 +122,7 @@ export const EntityData = () => {
 
                 <View style={styles.inputContainer}>
                   <Input
-                    disabled={false}
+                    disabled={true}
                     disabledInputStyle={CommonStyles.disabledInputStyle}
                     inputContainerStyle={CommonStyles.inputContainerStyle}
                     errorMessage={

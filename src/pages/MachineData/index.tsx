@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, StyleSheet, View} from 'react-native';
+import {Alert, StyleSheet, Text, View} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import FullPage from '../../components/layouts/full-page/FullPage';
 import {Sizes} from '../../assets/Theme';
@@ -8,6 +8,8 @@ import {Button, Input} from '@rneui/themed';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {ProdType, useProduct} from '../../hooks/useProduct';
+import DropDownPicker from 'react-native-dropdown-picker';
+import {COUNTRY_LIST, YEAR_LIST} from '../../utils/constants';
 
 const validation = Yup.object().shape({
   // material: '',
@@ -38,6 +40,8 @@ export const MachineData = () => {
   const route: any = useRoute();
   const [code, setCode] = useState<string>('');
   const [prevData, setPrevData] = useState<any>(null);
+  const [countryDdOpen, setCountryDdOpen] = useState<boolean>(false);
+  const [yearDdOpen, setYearDdOpen] = useState<boolean>(false);
   const [type, setType] = useState<ProdType | undefined>(undefined);
   const {getType} = useProduct();
 
@@ -94,7 +98,7 @@ export const MachineData = () => {
   };
 
   return (
-    <FullPage title="Machinery and Equipment" hasBackBtn={true}>
+    <FullPage title="MANUFACTURING DATA" hasBackBtn={true}>
       <View style={styles.container}>
         <View style={styles.formArea}>
           <Formik
@@ -154,7 +158,7 @@ export const MachineData = () => {
                   value={values.plateNumber}
                 />
 
-                <Input
+                {/* <Input
                   disabled={false}
                   disabledInputStyle={CommonStyles.disabledInputStyle}
                   inputContainerStyle={CommonStyles.inputContainerStyle}
@@ -172,7 +176,47 @@ export const MachineData = () => {
                   }
                   value={values.yearOfManufacture}
                   keyboardType="number-pad"
-                />
+                /> */}
+                <View>
+                  <Text style={CommonStyles.ddTitleText}>
+                    Year of Manufacture
+                  </Text>
+                  <DropDownPicker
+                    listMode="MODAL"
+                    loading={true}
+                    searchable={true}
+                    key={'year-list'}
+                    placeholder="Year of Manufacture"
+                    placeholderStyle={CommonStyles.ddPlaceholderStyle}
+                    containerStyle={[
+                      CommonStyles.ddContainerStyle,
+                      // eslint-disable-next-line react-native/no-inline-styles
+                      {zIndex: 10000},
+                    ]}
+                    style={CommonStyles.ddStyle}
+                    dropDownContainerStyle={CommonStyles.dropDownContainerStyle}
+                    labelStyle={CommonStyles.ddLabelText}
+                    disabled={false}
+                    open={yearDdOpen}
+                    value={values.yearOfManufacture}
+                    items={YEAR_LIST()}
+                    setOpen={val => {
+                      setYearDdOpen(val);
+                      if (!val) {
+                        setFieldTouched('yearOfManufacture');
+                      }
+                    }}
+                    setValue={fn => {
+                      const value = fn(values.yearOfManufacture);
+                      setFieldValue('yearOfManufacture', value);
+                    }}
+                  />
+                  <Text style={CommonStyles.ddErrorText}>
+                    {touched.yearOfManufacture && errors.yearOfManufacture
+                      ? errors.yearOfManufacture
+                      : undefined}
+                  </Text>
+                </View>
                 {type === 'TRANSPORT' ? (
                   <Input
                     disabled={false}
@@ -212,24 +256,42 @@ export const MachineData = () => {
                   />
                 )}
 
-                <Input
-                  disabled={false}
-                  disabledInputStyle={CommonStyles.disabledInputStyle}
-                  inputContainerStyle={CommonStyles.inputContainerStyle}
-                  errorMessage={
-                    touched.countryOfOrigin && errors.countryOfOrigin
+                <View>
+                  <Text style={CommonStyles.ddTitleText}>
+                    Country of Origin
+                  </Text>
+                  <DropDownPicker
+                    listMode="MODAL"
+                    loading={true}
+                    searchable={true}
+                    key={'country-list'}
+                    placeholder="Country of Origin"
+                    placeholderStyle={CommonStyles.ddPlaceholderStyle}
+                    containerStyle={CommonStyles.ddContainerStyle}
+                    style={CommonStyles.ddStyle}
+                    dropDownContainerStyle={CommonStyles.dropDownContainerStyle}
+                    labelStyle={CommonStyles.ddLabelText}
+                    disabled={false}
+                    open={countryDdOpen}
+                    value={values.countryOfOrigin}
+                    items={COUNTRY_LIST}
+                    setOpen={val => {
+                      setCountryDdOpen(val);
+                      if (!val) {
+                        setFieldTouched('countryOfOrigin');
+                      }
+                    }}
+                    setValue={fn => {
+                      const value = fn(values.countryOfOrigin);
+                      setFieldValue('countryOfOrigin', value);
+                    }}
+                  />
+                  <Text style={CommonStyles.ddErrorText}>
+                    {touched.countryOfOrigin && errors.countryOfOrigin
                       ? errors.countryOfOrigin
-                      : undefined
-                  }
-                  label="Country of Origin"
-                  labelStyle={CommonStyles.labelStyle}
-                  placeholder="Country of Origin"
-                  onBlur={() => setFieldTouched('countryOfOrigin')}
-                  onChangeText={value =>
-                    setFieldValue('countryOfOrigin', value)
-                  }
-                  value={values.countryOfOrigin}
-                />
+                      : undefined}
+                  </Text>
+                </View>
 
                 <Input
                   disabled={false}

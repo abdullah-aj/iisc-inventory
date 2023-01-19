@@ -10,7 +10,7 @@ export const Home = () => {
   const navigation = useNavigation<any>();
 
   const handleAddAsset = () => {
-    navigation.push('typeSelection');
+    navigation.push('entityData');
   };
 
   return (

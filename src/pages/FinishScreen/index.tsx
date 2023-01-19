@@ -35,6 +35,7 @@ export const FinishScreen = () => {
   }, [route.params]);
 
   const handleFinish = async () => {
+    console.log(products);
     setLoading(true);
     const res = await saveData();
     let toUpdate = [...products];
@@ -113,6 +114,11 @@ export const FinishScreen = () => {
           formData.append('name', product.data.assetDescription);
         if (product.data?.uniqueAssetNumber)
           formData.append('uniqueAssetNumber', product.data.uniqueAssetNumber);
+        if (product.data?.assetCondition)
+          formData.append(
+            'asset_condition_upon_inspection',
+            product.data.assetCondition,
+          );
 
         // Geological Data
 
@@ -205,13 +211,6 @@ export const FinishScreen = () => {
 
         if (product.data?.version)
           formData.append('version', product.data.version);
-
-        // other data
-        if (product.data?.assetCondition)
-          formData.append(
-            'asset_condition_upon_inspection',
-            product.data.assetCondition,
-          );
 
         // Extra: removing this crashes the api
         formData.append('accounting_id', 1);

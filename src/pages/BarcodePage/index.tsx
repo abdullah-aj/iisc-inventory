@@ -81,15 +81,19 @@ export const BarcodePage = () => {
         navigation.push('productImageList', {
           code: barCode,
           symmetricalTo: route.params.symmetricalTo,
+          prevData: route.params.prevData,
         });
       } else {
         navigation.push('productImageList', {
           code: barCode,
+          prevData: route.params.prevData,
         });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateCheck]);
+
+  useEffect(() => {}, [route.params]);
 
   return (
     <>

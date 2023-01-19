@@ -10,6 +10,8 @@ import * as Yup from 'yup';
 import {useProduct, ProdType} from '../../hooks/useProduct';
 import Geolocation from '@react-native-community/geolocation';
 import {Text} from '@rneui/base';
+import DropDownPicker from 'react-native-dropdown-picker';
+import {COUNTRY_LIST} from '../../utils/constants';
 
 const validation = Yup.object().shape({
   // zipCode: '',
@@ -48,6 +50,7 @@ export const GeoData = () => {
   const [type, setType] = useState<ProdType | undefined>();
   const [geoPermission, setGeoPermission] = useState<boolean>(false);
   const [location, setLocation] = useState<LocationType>();
+  const [countryDdOpen, setCountryDdOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (route?.params?.code) {
@@ -137,7 +140,7 @@ export const GeoData = () => {
   };
 
   return (
-    <FullPage title={'Geographical Data'} hasBackBtn={true}>
+    <FullPage title={'GEOGRAPHICAL DATA'} hasBackBtn={true}>
       <View style={styles.container}>
         <View style={styles.formArea}>
           <Formik
@@ -284,22 +287,40 @@ export const GeoData = () => {
                   value={values.region}
                 />
 
-                <Input
-                  disabled={false}
-                  disabledInputStyle={CommonStyles.disabledInputStyle}
-                  inputContainerStyle={CommonStyles.inputContainerStyle}
-                  errorMessage={
-                    touched.country && errors.country
+                <View>
+                  <Text style={CommonStyles.ddTitleText}>Country</Text>
+                  <DropDownPicker
+                    listMode="MODAL"
+                    loading={false}
+                    searchable={true}
+                    key={'country-list'}
+                    placeholder="Country"
+                    placeholderStyle={CommonStyles.ddPlaceholderStyle}
+                    containerStyle={CommonStyles.ddContainerStyle}
+                    style={CommonStyles.ddStyle}
+                    dropDownContainerStyle={CommonStyles.dropDownContainerStyle}
+                    labelStyle={CommonStyles.ddLabelText}
+                    disabled={false}
+                    open={countryDdOpen}
+                    value={values.country}
+                    items={COUNTRY_LIST}
+                    setOpen={val => {
+                      setCountryDdOpen(val);
+                      if (!val) {
+                        setFieldTouched('country');
+                      }
+                    }}
+                    setValue={fn => {
+                      const value = fn(values.country);
+                      setFieldValue('country', value);
+                    }}
+                  />
+                  <Text style={CommonStyles.ddErrorText}>
+                    {touched.country && errors.country
                       ? errors.country
-                      : undefined
-                  }
-                  label="Country"
-                  labelStyle={CommonStyles.labelStyle}
-                  placeholder="Country"
-                  onBlur={() => setFieldTouched('country')}
-                  onChangeText={value => setFieldValue('country', value)}
-                  value={values.country}
-                />
+                      : undefined}
+                  </Text>
+                </View>
 
                 <View>
                   <Button
