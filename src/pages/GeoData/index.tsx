@@ -12,25 +12,22 @@ import Geolocation from '@react-native-community/geolocation';
 import {Text} from '@rneui/base';
 
 const validation = Yup.object().shape({
-  // coordinates: '',
-  // zip: '',
-  // room: '',
-  // floor: '',
-  // building: '',
+  // zipCode: '',
+  // roomNumber: '',
+  // floorNumber: '',
+  // buildingNumber: '',
   // city: '',
   // region: '',
   // country: '',
 
-  // coordinates: Yup.string().required('Required'),
-  zip: Yup.string().required('Required'),
+  zipCode: Yup.string().required('Required'),
 });
 
 type FormValues = {
-  coordinates: string;
-  zip: string;
-  room: string;
-  floor: string;
-  building: string;
+  zipCode: string;
+  roomNumber: string;
+  floorNumber: string;
+  buildingNumber: string;
   city: string;
   region: string;
   country: string;
@@ -85,9 +82,9 @@ export const GeoData = () => {
     if (location?.longitude) {
       const data = {...prevData, ...values};
       if (type === 'BIO') {
-        delete data.floor;
-        delete data.building;
-        delete data.room;
+        delete data.floorNumber;
+        delete data.buildingNumber;
+        delete data.roomNumber;
         navigation.push('bioData', {
           code: code,
           prevData: data,
@@ -145,11 +142,10 @@ export const GeoData = () => {
         <View style={styles.formArea}>
           <Formik
             initialValues={{
-              coordinates: '',
-              zip: '',
-              room: '',
-              floor: '',
-              building: '',
+              zipCode: '',
+              roomNumber: '',
+              floorNumber: '',
+              buildingNumber: '',
               city: '',
               region: '',
               country: '',
@@ -186,46 +182,54 @@ export const GeoData = () => {
                   disabledInputStyle={CommonStyles.disabledInputStyle}
                   inputContainerStyle={CommonStyles.inputContainerStyle}
                   errorMessage={
-                    touched.zip && errors.zip ? errors.zip : undefined
+                    touched.zipCode && errors.zipCode
+                      ? errors.zipCode
+                      : undefined
                   }
                   label="Zip Code"
                   labelStyle={CommonStyles.labelStyle}
                   placeholder="Zip Code"
-                  onBlur={() => setFieldTouched('zip')}
-                  onChangeText={value => setFieldValue('zip', value)}
-                  value={values.zip}
+                  onBlur={() => setFieldTouched('zipCode')}
+                  onChangeText={value => setFieldValue('zipCode', value)}
+                  value={values.zipCode}
                   keyboardType="number-pad"
                 />
 
-                {type === 'MACHINE' && (
+                {type !== 'BIO' && (
                   <>
                     <Input
                       disabled={false}
                       disabledInputStyle={CommonStyles.disabledInputStyle}
                       inputContainerStyle={CommonStyles.inputContainerStyle}
                       errorMessage={
-                        touched.room && errors.room ? errors.room : undefined
+                        touched.roomNumber && errors.roomNumber
+                          ? errors.roomNumber
+                          : undefined
                       }
                       label="Room / Office Number"
                       labelStyle={CommonStyles.labelStyle}
                       placeholder="Office Number"
-                      onBlur={() => setFieldTouched('room')}
-                      onChangeText={value => setFieldValue('room', value)}
-                      value={values.room}
+                      onBlur={() => setFieldTouched('roomNumber')}
+                      onChangeText={value => setFieldValue('roomNumber', value)}
+                      value={values.roomNumber}
                     />
                     <Input
                       disabled={false}
                       disabledInputStyle={CommonStyles.disabledInputStyle}
                       inputContainerStyle={CommonStyles.inputContainerStyle}
                       errorMessage={
-                        touched.floor && errors.floor ? errors.floor : undefined
+                        touched.floorNumber && errors.floorNumber
+                          ? errors.floorNumber
+                          : undefined
                       }
                       label="Floor Number"
                       labelStyle={CommonStyles.labelStyle}
                       placeholder="Floor Number"
-                      onBlur={() => setFieldTouched('floor')}
-                      onChangeText={value => setFieldValue('floor', value)}
-                      value={values.floor}
+                      onBlur={() => setFieldTouched('floorNumber')}
+                      onChangeText={value =>
+                        setFieldValue('floorNumber', value)
+                      }
+                      value={values.floorNumber}
                       keyboardType="number-pad"
                     />
 
@@ -234,16 +238,18 @@ export const GeoData = () => {
                       disabledInputStyle={CommonStyles.disabledInputStyle}
                       inputContainerStyle={CommonStyles.inputContainerStyle}
                       errorMessage={
-                        touched.building && errors.building
-                          ? errors.building
+                        touched.buildingNumber && errors.buildingNumber
+                          ? errors.buildingNumber
                           : undefined
                       }
                       label="Building Number"
                       labelStyle={CommonStyles.labelStyle}
                       placeholder="Building Number"
-                      onBlur={() => setFieldTouched('building')}
-                      onChangeText={value => setFieldValue('building', value)}
-                      value={values.building}
+                      onBlur={() => setFieldTouched('buildingNumber')}
+                      onChangeText={value =>
+                        setFieldValue('buildingNumber', value)
+                      }
+                      value={values.buildingNumber}
                     />
                   </>
                 )}

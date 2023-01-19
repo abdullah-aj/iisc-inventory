@@ -11,10 +11,11 @@ import {ProdType, useProduct} from '../../hooks/useProduct';
 
 const validation = Yup.object().shape({
   // material: '',
-  // registrationNumber: '',
+  // plateNumber: '',
   // yearOfManufacture: '',
   // serialNumber: '',
-  // country: '',
+  // manufactureSerialNumber: '',s
+  // countryOfOrigin: '',
   // model: '',
   // manufacturer: '',
 
@@ -23,10 +24,11 @@ const validation = Yup.object().shape({
 
 type FormValues = {
   material: string;
-  registrationNumber: string;
+  plateNumber: string;
   yearOfManufacture: string;
+  manufactureSerialNumber: string; // ==
   serialNumber: string;
-  country: string;
+  countryOfOrigin: string;
   model: string;
   manufacturer: string;
 };
@@ -98,10 +100,11 @@ export const MachineData = () => {
           <Formik
             initialValues={{
               material: '',
-              registrationNumber: '',
+              plateNumber: '',
               yearOfManufacture: '',
               serialNumber: '',
-              country: '',
+              manufactureSerialNumber: '',
+              countryOfOrigin: '',
               model: '',
               manufacturer: '',
             }}
@@ -139,18 +142,16 @@ export const MachineData = () => {
                   disabledInputStyle={CommonStyles.disabledInputStyle}
                   inputContainerStyle={CommonStyles.inputContainerStyle}
                   errorMessage={
-                    touched.registrationNumber && errors.registrationNumber
-                      ? errors.registrationNumber
+                    touched.plateNumber && errors.plateNumber
+                      ? errors.plateNumber
                       : undefined
                   }
                   label="Registration / Plate Number"
                   labelStyle={CommonStyles.labelStyle}
                   placeholder="Plate Number"
-                  onBlur={() => setFieldTouched('registrationNumber')}
-                  onChangeText={value =>
-                    setFieldValue('registrationNumber', value)
-                  }
-                  value={values.registrationNumber}
+                  onBlur={() => setFieldTouched('plateNumber')}
+                  onChangeText={value => setFieldValue('plateNumber', value)}
+                  value={values.plateNumber}
                 />
 
                 <Input
@@ -172,7 +173,7 @@ export const MachineData = () => {
                   value={values.yearOfManufacture}
                   keyboardType="number-pad"
                 />
-                {type === 'TRANSPORT' && (
+                {type === 'TRANSPORT' ? (
                   <Input
                     disabled={false}
                     disabledInputStyle={CommonStyles.disabledInputStyle}
@@ -182,12 +183,32 @@ export const MachineData = () => {
                         ? errors.serialNumber
                         : undefined
                     }
-                    label="Manufacture Serial Number"
+                    label="Serial Number"
                     labelStyle={CommonStyles.labelStyle}
-                    placeholder="Manufacture Serial Number"
+                    placeholder="Serial Number"
                     onBlur={() => setFieldTouched('serialNumber')}
                     onChangeText={value => setFieldValue('serialNumber', value)}
                     value={values.serialNumber}
+                  />
+                ) : (
+                  <Input
+                    disabled={false}
+                    disabledInputStyle={CommonStyles.disabledInputStyle}
+                    inputContainerStyle={CommonStyles.inputContainerStyle}
+                    errorMessage={
+                      touched.manufactureSerialNumber &&
+                      errors.manufactureSerialNumber
+                        ? errors.manufactureSerialNumber
+                        : undefined
+                    }
+                    label="Manufacture Serial Number"
+                    labelStyle={CommonStyles.labelStyle}
+                    placeholder="Manufacture Serial Number"
+                    onBlur={() => setFieldTouched('manufactureSerialNumber')}
+                    onChangeText={value =>
+                      setFieldValue('manufactureSerialNumber', value)
+                    }
+                    value={values.manufactureSerialNumber}
                   />
                 )}
 
@@ -196,16 +217,18 @@ export const MachineData = () => {
                   disabledInputStyle={CommonStyles.disabledInputStyle}
                   inputContainerStyle={CommonStyles.inputContainerStyle}
                   errorMessage={
-                    touched.country && errors.country
-                      ? errors.country
+                    touched.countryOfOrigin && errors.countryOfOrigin
+                      ? errors.countryOfOrigin
                       : undefined
                   }
                   label="Country of Origin"
                   labelStyle={CommonStyles.labelStyle}
                   placeholder="Country of Origin"
-                  onBlur={() => setFieldTouched('country')}
-                  onChangeText={value => setFieldValue('country', value)}
-                  value={values.country}
+                  onBlur={() => setFieldTouched('countryOfOrigin')}
+                  onChangeText={value =>
+                    setFieldValue('countryOfOrigin', value)
+                  }
+                  value={values.countryOfOrigin}
                 />
 
                 <Input

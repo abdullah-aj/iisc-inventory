@@ -13,11 +13,11 @@ import {MEASURE_UNITS} from '../../utils/constants';
 
 const validation = Yup.object().shape({
   // custodian: '',
-  // factoryId: '',
+  // uniqueFactoryId: '',
   // quantity: '',
-  // baseUnit: '',
+  // baseUnitOfMeasure: '',
   // assetDescription: '',
-  // assetNumber: '',
+  // uniqueAssetNumber: '',
 
   custodian: Yup.string().required('Required'),
   quantity: Yup.string().required('Required'),
@@ -25,11 +25,11 @@ const validation = Yup.object().shape({
 
 type FormValues = {
   custodian: string;
-  factoryId: string;
+  uniqueFactoryId: string;
   quantity: string;
-  baseUnit: string;
+  baseUnitOfMeasure: string;
   assetDescription: string;
-  assetNumber: string;
+  uniqueAssetNumber: string;
 };
 
 export const AssetData = () => {
@@ -74,7 +74,7 @@ export const AssetData = () => {
       type === 'INFRASTRUCTURE' ||
       type === 'FURNITURE'
     ) {
-      delete data.factoryId;
+      delete data.uniqueFactoryId;
     }
 
     navigation.push('geoData', {
@@ -90,11 +90,11 @@ export const AssetData = () => {
           <Formik
             initialValues={{
               custodian: '',
-              factoryId: '',
+              uniqueFactoryId: '',
               quantity: '',
-              baseUnit: '',
+              baseUnitOfMeasure: '',
               assetDescription: '',
-              assetNumber: '',
+              uniqueAssetNumber: '',
             }}
             validationSchema={validation}
             onSubmit={handleSubmitForm}>
@@ -132,16 +132,18 @@ export const AssetData = () => {
                       disabledInputStyle={CommonStyles.disabledInputStyle}
                       inputContainerStyle={CommonStyles.inputContainerStyle}
                       errorMessage={
-                        touched.factoryId && errors.factoryId
-                          ? errors.factoryId
+                        touched.uniqueFactoryId && errors.uniqueFactoryId
+                          ? errors.uniqueFactoryId
                           : undefined
                       }
                       label="Unique Factory ID"
                       labelStyle={CommonStyles.labelStyle}
                       placeholder="Asset Serial Number"
-                      onBlur={() => setFieldTouched('factoryId')}
-                      onChangeText={value => setFieldValue('factoryId', value)}
-                      value={values.factoryId}
+                      onBlur={() => setFieldTouched('uniqueFactoryId')}
+                      onChangeText={value =>
+                        setFieldValue('uniqueFactoryId', value)
+                      }
+                      value={values.uniqueFactoryId}
                       keyboardType={'number-pad'}
                     />
                   ))}
@@ -181,22 +183,22 @@ export const AssetData = () => {
                     labelStyle={CommonStyles.ddLabelText}
                     disabled={false}
                     open={unitDdOpen}
-                    value={values.baseUnit}
+                    value={values.baseUnitOfMeasure}
                     items={MEASURE_UNITS}
                     setOpen={val => {
                       setUnitDdOpen(val);
                       if (!val) {
-                        setFieldTouched('baseUnit');
+                        setFieldTouched('baseUnitOfMeasure');
                       }
                     }}
                     setValue={fn => {
-                      const value = fn(values.baseUnit);
-                      setFieldValue('baseUnit', value);
+                      const value = fn(values.baseUnitOfMeasure);
+                      setFieldValue('baseUnitOfMeasure', value);
                     }}
                   />
                   <Text style={CommonStyles.ddErrorText}>
-                    {touched.baseUnit && errors.baseUnit
-                      ? errors.baseUnit
+                    {touched.baseUnitOfMeasure && errors.baseUnitOfMeasure
+                      ? errors.baseUnitOfMeasure
                       : undefined}
                   </Text>
                 </View>
@@ -225,16 +227,18 @@ export const AssetData = () => {
                   disabledInputStyle={CommonStyles.disabledInputStyle}
                   inputContainerStyle={CommonStyles.inputContainerStyle}
                   errorMessage={
-                    touched.assetNumber && errors.assetNumber
-                      ? errors.assetNumber
+                    touched.uniqueAssetNumber && errors.uniqueAssetNumber
+                      ? errors.uniqueAssetNumber
                       : undefined
                   }
                   label="Unique Asset Number in the Entity"
                   labelStyle={CommonStyles.labelStyle}
                   placeholder="Unique Asset Number"
-                  onBlur={() => setFieldTouched('assetNumber')}
-                  onChangeText={value => setFieldValue('assetNumber', value)}
-                  value={values.assetNumber}
+                  onBlur={() => setFieldTouched('uniqueAssetNumber')}
+                  onChangeText={value =>
+                    setFieldValue('uniqueAssetNumber', value)
+                  }
+                  value={values.uniqueAssetNumber}
                   keyboardType="number-pad"
                 />
 

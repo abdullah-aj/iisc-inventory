@@ -194,8 +194,6 @@ export const FinishScreen = () => {
           );
         if (product.data?.version)
           formData.append('version', product.data?.version);
-        if (product.data?.version)
-          formData.append('version', product.data?.version);
         formData.append('accounting_id', 1);
 
         try {

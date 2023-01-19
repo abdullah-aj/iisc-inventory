@@ -13,23 +13,23 @@ const validation = Yup.object().shape({
     //.matches(/^[\u0621-\u064A0-9 ]+$/, 'Please use English Numerals')
     .required('Required'),
   //.required('Required'),
-  // capacity: Yup.string().required('Required'),
+  // productionCapacity: Yup.string().required('Required'),
   // purpose: Yup.string().matches(
   //   /^[\u0621-\u064A0-9 ]+$/,
   //   'Please use English Numerals',
   // ),
-  // stage: Yup.string().required('Required'),
-  // age: Yup.string().required('Required'),
-  // life: Yup.string().required('Required'),
+  // stageInBiologicalCycle: Yup.string().required('Required'),
+  // biologicalAge: Yup.string().required('Required'),
+  // usefulLife: Yup.string().required('Required'),
 });
 
 type FormValues = {
   gender: string;
-  capacity: string;
+  productionCapacity: string;
   purpose: string;
-  stage: string;
-  age: string;
-  life: string;
+  stageInBiologicalCycle: string;
+  biologicalAge: string;
+  usefulLife: string;
 };
 
 export const BioData = () => {
@@ -84,11 +84,11 @@ export const BioData = () => {
           <Formik
             initialValues={{
               gender: '',
-              capacity: '',
+              productionCapacity: '',
               purpose: '',
-              stage: '',
-              age: '',
-              life: '',
+              stageInBiologicalCycle: '',
+              biologicalAge: '',
+              usefulLife: '',
             }}
             validationSchema={validation}
             onSubmit={handleSubmitForm}>
@@ -122,16 +122,18 @@ export const BioData = () => {
                   disabledInputStyle={CommonStyles.disabledInputStyle}
                   inputContainerStyle={CommonStyles.inputContainerStyle}
                   errorMessage={
-                    touched.capacity && errors.capacity
-                      ? errors.capacity
+                    touched.productionCapacity && errors.productionCapacity
+                      ? errors.productionCapacity
                       : undefined
                   }
                   label="Production Capacity"
                   labelStyle={CommonStyles.labelStyle}
                   placeholder="Production Capacity"
-                  onBlur={() => setFieldTouched('capacity')}
-                  onChangeText={value => setFieldValue('capacity', value)}
-                  value={values.capacity}
+                  onBlur={() => setFieldTouched('productionCapacity')}
+                  onChangeText={value =>
+                    setFieldValue('productionCapacity', value)
+                  }
+                  value={values.productionCapacity}
                 />
 
                 <Input
@@ -156,14 +158,19 @@ export const BioData = () => {
                   disabledInputStyle={CommonStyles.disabledInputStyle}
                   inputContainerStyle={CommonStyles.inputContainerStyle}
                   errorMessage={
-                    touched.stage && errors.stage ? errors.stage : undefined
+                    touched.stageInBiologicalCycle &&
+                    errors.stageInBiologicalCycle
+                      ? errors.stageInBiologicalCycle
+                      : undefined
                   }
                   label="Stage In Biological Cycle"
                   labelStyle={CommonStyles.labelStyle}
                   placeholder="Stage"
-                  onBlur={() => setFieldTouched('stage')}
-                  onChangeText={value => setFieldValue('stage', value)}
-                  value={values.stage}
+                  onBlur={() => setFieldTouched('stageInBiologicalCycle')}
+                  onChangeText={value =>
+                    setFieldValue('stageInBiologicalCycle', value)
+                  }
+                  value={values.stageInBiologicalCycle}
                 />
 
                 <Input
@@ -171,14 +178,16 @@ export const BioData = () => {
                   disabledInputStyle={CommonStyles.disabledInputStyle}
                   inputContainerStyle={CommonStyles.inputContainerStyle}
                   errorMessage={
-                    touched.age && errors.age ? errors.age : undefined
+                    touched.biologicalAge && errors.biologicalAge
+                      ? errors.biologicalAge
+                      : undefined
                   }
                   label="Biological Age"
                   labelStyle={CommonStyles.labelStyle}
                   placeholder="Age"
-                  onBlur={() => setFieldTouched('age')}
-                  onChangeText={value => setFieldValue('age', value)}
-                  value={values.age}
+                  onBlur={() => setFieldTouched('biologicalAge')}
+                  onChangeText={value => setFieldValue('biologicalAge', value)}
+                  value={values.biologicalAge}
                 />
 
                 <Input
@@ -186,14 +195,16 @@ export const BioData = () => {
                   disabledInputStyle={CommonStyles.disabledInputStyle}
                   inputContainerStyle={CommonStyles.inputContainerStyle}
                   errorMessage={
-                    touched.life && errors.life ? errors.life : undefined
+                    touched.usefulLife && errors.usefulLife
+                      ? errors.usefulLife
+                      : undefined
                   }
                   label="Useful Life"
                   labelStyle={CommonStyles.labelStyle}
                   placeholder="Useful Life"
-                  onBlur={() => setFieldTouched('life')}
-                  onChangeText={value => setFieldValue('life', value)}
-                  value={values.life}
+                  onBlur={() => setFieldTouched('usefulLife')}
+                  onChangeText={value => setFieldValue('usefulLife', value)}
+                  value={values.usefulLife}
                 />
                 <View>
                   <Button
