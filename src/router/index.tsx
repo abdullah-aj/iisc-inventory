@@ -31,27 +31,37 @@ const Router: React.FC = () => {
   }, [user]);
 
   useEffect(() => {
-    accessCheck(10000);
+    setTimeout(() => {
+      accessCheck();
+    }, 10000);
+    runInterval(30000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const accessCheck = (timeout: number) => {
+  const runInterval = (timeout: number) => {
     setInterval(async () => {
-      console.log('checking access');
-      try {
-        let resp: any = await fetch(
-          'https://63c6b665d307b769673f42ed.mockapi.io/api/v1/graceful-kill',
-        );
-        resp = await resp.json();
-        if (resp && resp[0] && resp[0].allowed === true) {
-          setHaveAccess(true);
-        } else {
-          setHaveAccess(false);
-        }
-      } catch (e) {
-        console.log(e);
+      await accessCheck();
+    }, timeout);
+  };
+
+  const accessCheck = async () => {
+    console.log('checking access');
+    try {
+      let resp: any = await fetch(
+        'https://63c6b665d307b769673f42ed.mockapi.io/api/v1/graceful-kill',
+      );
+      resp = await resp.json();
+      if (resp && resp[0] && resp[0].allowed === true) {
+        setHaveAccess(true);
+      } else {
         setHaveAccess(false);
       }
-    }, timeout);
+      return true;
+    } catch (e) {
+      console.log(e);
+      setHaveAccess(false);
+      return false;
+    }
   };
 
   if (!haveAccess) {
