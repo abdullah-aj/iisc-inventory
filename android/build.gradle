@@ -6,7 +6,7 @@ buildscript {
         minSdkVersion = 21
         compileSdkVersion = 31
         targetSdkVersion = 31
-		kotlin_version = "1.6.10"
+		kotlin_version = "1.6.20"
         VisionCameraCodeScanner_targetSdkVersion = 31
         VisionCameraCodeScanner_compileSdkVersion = 31
 

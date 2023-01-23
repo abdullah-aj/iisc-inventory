@@ -83,7 +83,12 @@ export const GeoData = () => {
 
   const handleSubmitForm = async (values: FormValues) => {
     if (location?.longitude) {
-      const data = {...prevData, ...values};
+      const data = {
+        ...prevData,
+        ...values,
+        longitude: location?.longitude,
+        latitude: location?.latitude,
+      };
       if (type === 'BIO') {
         delete data.floorNumber;
         delete data.buildingNumber;

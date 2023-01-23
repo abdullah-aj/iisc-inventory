@@ -175,12 +175,12 @@ export const FinishScreen = () => {
         if (product.data?.yearOfManufacture)
           formData.append(
             'year_of_manufacture',
-            product.data?.yearOfManufacture,
+            product.data.yearOfManufacture,
           );
         if (product.data?.manufactureSerialNumber)
           formData.append(
             'manufacturer_serial_number',
-            product.data?.manufactureSerialNumber,
+            product.data.manufactureSerialNumber,
           );
         if (product.data?.serialNumber)
           formData.append('serial_number', product.data.serialNumber);
@@ -198,12 +198,12 @@ export const FinishScreen = () => {
         if (product.data?.reasonForIndefinite)
           formData.append(
             'reasons_for_indefinite',
-            product.data?.reasonForIndefinite,
+            product.data.reasonForIndefinite,
           );
         if (product.data?.licenseExpiration)
           formData.append(
             'license_expiration_date',
-            product.data?.licenseExpiration,
+            product.data.licenseExpiration,
           );
 
         if (product.data?.programLicense)
