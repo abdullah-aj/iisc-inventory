@@ -87,28 +87,20 @@ export const MEASURE_UNITS = [
 ];
 export const ASSET_CONDITION = [
   {
-    value: 'Excellent',
+    value: 'ممتاز',
     label: 'Excellent',
   },
   {
-    value: 'Good',
+    value: 'جيد جدا',
+    label: 'Very Good',
+  },
+  {
+    value: 'جيد ',
     label: 'Good',
   },
   {
-    value: 'Normal',
-    label: 'Normal',
-  },
-  {
-    value: 'Rough',
-    label: 'Rough',
-  },
-  {
-    value: 'Bad',
-    label: 'Bad',
-  },
-  {
-    value: 'Very Bad',
-    label: 'Very Bad',
+    value: 'رديء ',
+    label: 'Poor',
   },
 ];
 

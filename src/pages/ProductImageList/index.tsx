@@ -40,6 +40,7 @@ export const ProductImageList = () => {
       id: id,
       code: route?.params?.code,
       symmetricalTo: symmetricalTo,
+      prevData: route.params.prevData,
     });
   };
 

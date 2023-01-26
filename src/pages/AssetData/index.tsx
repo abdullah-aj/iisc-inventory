@@ -55,6 +55,8 @@ export const AssetData = () => {
     if (code !== '') {
       (async () => {
         const t: ProdType | undefined = await getType(code);
+        console.log('=============');
+        console.log(t);
         setType(t);
       })();
     }
@@ -128,28 +130,27 @@ export const AssetData = () => {
                   value={values.custodian}
                 />
 
-                {type === 'MACHINE' ||
-                  (type === 'TRANSPORT' && (
-                    <Input
-                      disabled={false}
-                      disabledInputStyle={CommonStyles.disabledInputStyle}
-                      inputContainerStyle={CommonStyles.inputContainerStyle}
-                      errorMessage={
-                        touched.uniqueFactoryId && errors.uniqueFactoryId
-                          ? errors.uniqueFactoryId
-                          : undefined
-                      }
-                      label="Unique Factory ID"
-                      labelStyle={CommonStyles.labelStyle}
-                      placeholder="Asset Serial Number"
-                      onBlur={() => setFieldTouched('uniqueFactoryId')}
-                      onChangeText={value =>
-                        setFieldValue('uniqueFactoryId', value)
-                      }
-                      value={values.uniqueFactoryId}
-                      keyboardType={'number-pad'}
-                    />
-                  ))}
+                {(type === 'MACHINE' || type === 'TRANSPORT') && (
+                  <Input
+                    disabled={false}
+                    disabledInputStyle={CommonStyles.disabledInputStyle}
+                    inputContainerStyle={CommonStyles.inputContainerStyle}
+                    errorMessage={
+                      touched.uniqueFactoryId && errors.uniqueFactoryId
+                        ? errors.uniqueFactoryId
+                        : undefined
+                    }
+                    label="Unique Factory ID"
+                    labelStyle={CommonStyles.labelStyle}
+                    placeholder="Asset Serial Number"
+                    onBlur={() => setFieldTouched('uniqueFactoryId')}
+                    onChangeText={value =>
+                      setFieldValue('uniqueFactoryId', value)
+                    }
+                    value={values.uniqueFactoryId}
+                    keyboardType={'number-pad'}
+                  />
+                )}
 
                 <Input
                   disabled={false}

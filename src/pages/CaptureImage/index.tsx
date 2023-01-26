@@ -86,6 +86,7 @@ export const CaptureImage = () => {
       navigation.push('productImageList', {
         code: route.params.code,
         symmetricalTo: route?.params?.symmetricalTo,
+        prevData: route.params.prevData,
       });
     } else {
       Alert.alert('CODE NOT FOUND', 'Please Scan the Barcode again');

@@ -113,7 +113,10 @@ export const FinishScreen = () => {
         if (product.data?.assetDescription)
           formData.append('name', product.data.assetDescription);
         if (product.data?.uniqueAssetNumber)
-          formData.append('uniqueAssetNumber', product.data.uniqueAssetNumber);
+          formData.append(
+            'unique_asset_number_entity',
+            product.data.uniqueAssetNumber,
+          );
         if (product.data?.assetCondition)
           formData.append(
             'asset_condition_upon_inspection',
@@ -122,17 +125,11 @@ export const FinishScreen = () => {
 
         // Geological Data
 
-        if (product.data?.geographicalCoordinates?.latitude)
-          formData.append(
-            'lat',
-            product.data?.geographicalCoordinates?.latitude,
-          );
+        if (product.data?.latitude)
+          formData.append('lat', product.data?.latitude);
 
-        if (product.data?.geographicalCoordinates?.longitude)
-          formData.append(
-            'lng',
-            product.data?.geographicalCoordinates?.longitude,
-          );
+        if (product.data?.longitude)
+          formData.append('lng', product.data?.longitude);
         if (product.data?.zipCode)
           formData.append('ZIP_code', product.data.zipCode);
         if (product.data?.roomNumber)
@@ -172,6 +169,11 @@ export const FinishScreen = () => {
           formData.append('material', product.data.material);
         if (product.data?.plateNumber)
           formData.append('plate_number', product.data.plateNumber);
+        if (product.data?.registrationNumber)
+          formData.append(
+            'registration_number',
+            product.data.registrationNumber,
+          );
         if (product.data?.yearOfManufacture)
           formData.append(
             'year_of_manufacture',
@@ -212,8 +214,27 @@ export const FinishScreen = () => {
         if (product.data?.version)
           formData.append('version', product.data.version);
 
+        if (product.type === 'INFRASTRUCTURE') {
+          formData.append('asset_type', '1');
+        } else if (product.type === 'MACHINE') {
+          formData.append('asset_type', '2');
+        } else if (product.type === 'TRANSPORT') {
+          formData.append('asset_type', '3');
+        } else if (product.type === 'FURNITURE') {
+          formData.append('asset_type', '4');
+        } else if (product.type === 'BIO') {
+          formData.append('asset_type', '5');
+        } else if (product.type === 'INTANGIBLE') {
+          formData.append('asset_type', '6');
+        }
         // Extra: removing this crashes the api
         formData.append('accounting_id', 1);
+
+        console.log('------------');
+        for (const part of formData.getParts()) {
+          console.log(part);
+        }
+        console.log('------------');
 
         try {
           const response = await axios.post(`${API_URL}/hardware`, formData, {

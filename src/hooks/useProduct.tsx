@@ -12,6 +12,7 @@ type ProductData = {
   // INFRASTRUCTURE & MACHINE & TRANSPORT
   material?: string;
   plateNumber?: string;
+  registrationNumber?: string;
   yearOfManufacture?: string;
   manufactureSerialNumber?: string;
   serialNumber?: string; // only-in 3
@@ -37,10 +38,8 @@ type ProductData = {
   version?: string;
 
   // Geographical Location => not in 6
-  geographicalCoordinates?: {
-    latitude: string;
-    longitude: string;
-  };
+  latitude: string;
+  longitude: string;
   zipCode?: string;
   roomNumber?: string; // not-in 5
   floorNumber?: string; // not-in 5
@@ -204,7 +203,7 @@ export const ProductProvider = ({children}: ProductProviderProps) => {
   const addType = async (code: string, type: ProdType) => {
     const prodUpdated = [...products].map((product: Product) => {
       if (product.barcode === code) {
-        return {...product, type: type, data: {}};
+        return {...product, type: type, data: {} as ProductData};
       } else {
         return product;
       }

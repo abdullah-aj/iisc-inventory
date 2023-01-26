@@ -14,6 +14,7 @@ import {COUNTRY_LIST, YEAR_LIST} from '../../utils/constants';
 const validation = Yup.object().shape({
   // material: '',
   // plateNumber: '',
+  // registrationNumber: '',
   // yearOfManufacture: '',
   // serialNumber: '',
   // manufactureSerialNumber: '',s
@@ -27,6 +28,7 @@ const validation = Yup.object().shape({
 type FormValues = {
   material: string;
   plateNumber: string;
+  registrationNumber: string;
   yearOfManufacture: string;
   manufactureSerialNumber: string; // ==
   serialNumber: string;
@@ -66,6 +68,8 @@ export const MachineData = () => {
     const data = {...prevData, ...values};
     if (type !== 'TRANSPORT') {
       delete data.serialNumber;
+    } else {
+      delete data.manufactureSerialNumber;
     }
 
     navigation.push('finishScreen', {
@@ -105,6 +109,7 @@ export const MachineData = () => {
             initialValues={{
               material: '',
               plateNumber: '',
+              registrationNumber: '',
               yearOfManufacture: '',
               serialNumber: '',
               manufactureSerialNumber: '',
@@ -150,7 +155,7 @@ export const MachineData = () => {
                       ? errors.plateNumber
                       : undefined
                   }
-                  label="Registration / Plate Number"
+                  label="Plate Number"
                   labelStyle={CommonStyles.labelStyle}
                   placeholder="Plate Number"
                   onBlur={() => setFieldTouched('plateNumber')}
@@ -158,25 +163,25 @@ export const MachineData = () => {
                   value={values.plateNumber}
                 />
 
-                {/* <Input
+                <Input
                   disabled={false}
                   disabledInputStyle={CommonStyles.disabledInputStyle}
                   inputContainerStyle={CommonStyles.inputContainerStyle}
                   errorMessage={
-                    touched.yearOfManufacture && errors.yearOfManufacture
-                      ? errors.yearOfManufacture
+                    touched.registrationNumber && errors.registrationNumber
+                      ? errors.registrationNumber
                       : undefined
                   }
-                  label="Year of Manufacture"
+                  label="Registration Number"
                   labelStyle={CommonStyles.labelStyle}
-                  placeholder="Year of Manufacture"
-                  onBlur={() => setFieldTouched('yearOfManufacture')}
+                  placeholder="Registration Number"
+                  onBlur={() => setFieldTouched('registrationNumber')}
                   onChangeText={value =>
-                    setFieldValue('yearOfManufacture', value)
+                    setFieldValue('registrationNumber', value)
                   }
-                  value={values.yearOfManufacture}
+                  value={values.registrationNumber}
                   keyboardType="number-pad"
-                /> */}
+                />
                 <View>
                   <Text style={CommonStyles.ddTitleText}>
                     Year of Manufacture
