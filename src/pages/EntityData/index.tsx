@@ -83,7 +83,7 @@ export const EntityData = () => {
               touched,
             }) => (
               <View>
-                <View>
+                <View style={CommonStyles.ddContainer}>
                   <Text style={CommonStyles.ddTitleText}>Entity Name</Text>
                   <DropDownPicker
                     loading={entities.length === 0}

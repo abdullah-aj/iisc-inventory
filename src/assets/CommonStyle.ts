@@ -74,4 +74,5 @@ export const CommonStyles = StyleSheet.create({
     paddingTop: 5,
     fontSize: 12,
   },
+  ddContainer: {paddingBottom: 18},
 });
