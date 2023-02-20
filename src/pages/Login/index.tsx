@@ -4,9 +4,12 @@ import {StatusBar, StyleSheet, View} from 'react-native';
 import {useAuth} from '../../hooks/useAuth';
 import {Colors, Sizes} from '../../assets/Theme';
 import {CommonStyles} from '../../assets/CommonStyle';
+import {useTranslation} from 'react-i18next';
 
 export const Login = () => {
   const {loginAction} = useAuth();
+
+  const {t} = useTranslation();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [errorEmail, setErrorEmail] = useState<string>('');
@@ -19,7 +22,7 @@ export const Login = () => {
 
     if ((await loginAction({username: email, password: password})) === false) {
       setLoading(false);
-      setErrorPassword('Invalid username or password');
+      setErrorPassword(t('invalid-username-or-password') as string);
     }
   };
 
@@ -28,7 +31,7 @@ export const Login = () => {
       <StatusBar barStyle={'dark-content'} />
       <HeaderRNE
         backgroundColor={Colors.gray_7}
-        centerComponent={{text: 'SIGN IN', style: styles.heading}}
+        centerComponent={{text: t('sign-in') as string, style: styles.heading}}
       />
       <View style={styles.container}>
         <View style={styles.formArea}>
@@ -38,9 +41,9 @@ export const Login = () => {
               disabledInputStyle={CommonStyles.disabledInputStyle}
               inputContainerStyle={CommonStyles.inputContainerStyle}
               errorMessage={errorEmail}
-              label="Username"
+              label={t('username')}
               labelStyle={CommonStyles.labelStyle}
-              placeholder="Enter username"
+              placeholder={t('enter-username') as string}
               onChangeText={value => {
                 setErrorEmail('');
                 setEmail(value);
@@ -54,9 +57,9 @@ export const Login = () => {
               disabledInputStyle={CommonStyles.disabledInputStyle}
               inputContainerStyle={CommonStyles.inputContainerStyle}
               errorMessage={errorPassword}
-              label="Password"
+              label={t('password')}
               labelStyle={CommonStyles.labelStyle}
-              placeholder="Enter Password"
+              placeholder={t('enter-password') as string}
               onChangeText={value => {
                 setErrorPassword('');
                 setPassword(value);
@@ -70,7 +73,7 @@ export const Login = () => {
                 disabledStyle={CommonStyles.buttonDisabledStyle}
                 containerStyle={CommonStyles.buttonContainerStyle}
                 onPress={handleLogin}
-                title="Login"
+                title={t('login') as string}
                 titleStyle={CommonStyles.buttonTitleStyle}
                 loading={loading}
               />

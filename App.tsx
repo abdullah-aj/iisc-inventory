@@ -5,6 +5,7 @@ import Router from './src/router';
 import {AuthProvider} from './src/hooks/useAuth';
 import {ProductProvider} from './src/hooks/useProduct';
 import {ThemeProvider, createTheme} from '@rneui/themed';
+import {LangProvider} from './src/contexts/LangContext';
 
 const App = () => {
   const theme = createTheme({});
@@ -14,8 +15,10 @@ const App = () => {
       <ThemeProvider theme={theme}>
         <AuthProvider>
           <ProductProvider>
-            <Router />
-            <Toast />
+            <LangProvider>
+              <Router />
+              <Toast />
+            </LangProvider>
           </ProductProvider>
         </AuthProvider>
       </ThemeProvider>

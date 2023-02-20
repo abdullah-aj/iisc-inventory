@@ -8,12 +8,20 @@ import {NoAccess} from '../pages/NoAccess';
 import {useAuth} from '../hooks/useAuth';
 import axios from 'axios';
 import {TOKEN} from '../utils/constants';
+import i18n from 'i18next';
+import {initReactI18next} from 'react-i18next';
+import {English} from '../assets/lang/en';
+import {Arabic} from '../assets/lang/ar';
+import {useLang} from '../hooks/useLang';
 
 const Router: React.FC = () => {
   const {user} = useAuth();
   const [loggedIn, setLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [haveAccess, setHaveAccess] = useState(true);
+
+  const {getLang} = useLang();
+  const sysLng = getLang();
 
   useEffect(() => {
     setIsLoading(true);
@@ -31,6 +39,7 @@ const Router: React.FC = () => {
   }, [user]);
 
   useEffect(() => {
+    loadLanguage();
     setTimeout(() => {
       accessCheck();
     }, 10000);
@@ -62,6 +71,25 @@ const Router: React.FC = () => {
       setHaveAccess(false);
       return false;
     }
+  };
+
+  const loadLanguage = () => {
+    i18n.use(initReactI18next).init({
+      compatibilityJSON: 'v3',
+      resources: {
+        en: {
+          translation: English,
+        },
+        ar: {
+          translation: Arabic,
+        },
+      },
+      lng: sysLng,
+      fallbackLng: 'en',
+      interpolation: {
+        escapeValue: false,
+      },
+    });
   };
 
   if (!haveAccess) {

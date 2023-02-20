@@ -10,6 +10,7 @@ import * as Yup from 'yup';
 import DropDownPicker from 'react-native-dropdown-picker';
 import axios from 'axios';
 import {API_URL} from '../../utils/constants';
+import {useTranslation} from 'react-i18next';
 
 const validation = Yup.object().shape({
   entityCode: Yup.string().required('Required'),
@@ -30,6 +31,8 @@ export const EntityData = () => {
   const navigation = useNavigation<any>();
   const [open, setOpen] = useState(false);
   const [entities, setEntities] = useState<EntityType[]>([]);
+
+  const {t} = useTranslation();
 
   useEffect(() => {
     (async () => {
