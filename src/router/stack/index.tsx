@@ -14,6 +14,7 @@ import {FinishScreen} from '../../pages/FinishScreen';
 import {MachineData} from '../../pages/MachineData';
 import {IntangibleData} from '../../pages/IntangibleData';
 import {DataFields} from '../../pages/DataFields';
+import {Language} from '../../pages/Language';
 
 const StackNavigation: React.FC = () => {
   const Stack = createNativeStackNavigator();
@@ -37,6 +38,7 @@ const StackNavigation: React.FC = () => {
         <Stack.Screen name={'machineData'} component={MachineData} />
         <Stack.Screen name={'intangibleData'} component={IntangibleData} />
         <Stack.Screen name={'dataFields'} component={DataFields} />
+        <Stack.Screen name={'language'} component={Language} />
       </Stack.Navigator>
     </>
   );

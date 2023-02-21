@@ -4,6 +4,7 @@ import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import {Text, Divider} from '@rneui/themed';
 import {Colors} from '../../../assets/Theme';
 import {useAuth} from '../../../hooks/useAuth';
+import {useTranslation} from 'react-i18next';
 
 type propsType = {
   navigation: any;
@@ -14,6 +15,7 @@ type propsType = {
 
 const Menu: React.FC<propsType> = (props: propsType) => {
   const {logoutAction} = useAuth();
+  const {t} = useTranslation();
   const handleLogout: any = () => {
     logoutAction();
   };
@@ -28,12 +30,17 @@ const Menu: React.FC<propsType> = (props: propsType) => {
         <View style={styles.menuHeader} />
         <View style={[styles.menuSection]}>
           <DrawerItem
-            label={'Help'}
+            label={t('help') as string}
             onPress={() => Linking.openURL('https://sohoby.com')}
             style={styles.drawerItem}
           />
+          <DrawerItem
+            label={t('language') as string}
+            onPress={() => props.navigation.navigate('language')}
+            style={styles.drawerItem}
+          />
           <Divider width={1} color={Colors.gray_9} style={styles.divider} />
-          <DrawerItem label={'Logout'} onPress={handleLogout} />
+          <DrawerItem label={t('logout') as string} onPress={handleLogout} />
           <Divider width={1} color={Colors.gray_9} style={styles.divider} />
         </View>
       </DrawerContentScrollView>

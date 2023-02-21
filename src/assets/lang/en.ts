@@ -63,4 +63,8 @@ export const English = {
   success: 'SUCCESS',
   finish: 'FINISH',
   'add-symmetrical-asset': 'ADD SYMMETRICAL ASSET',
+  language: 'Language',
+  help: 'Help',
+  logout: 'Logout',
+  'select-language': 'Select Language',
 };

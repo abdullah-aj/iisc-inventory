@@ -21,7 +21,11 @@ const Router: React.FC = () => {
   const [haveAccess, setHaveAccess] = useState(true);
 
   const {getLang} = useLang();
-  const sysLng = getLang();
+  const language = getLang();
+
+  useEffect(() => {
+    loadLanguage(language);
+  }, [language]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -39,7 +43,6 @@ const Router: React.FC = () => {
   }, [user]);
 
   useEffect(() => {
-    loadLanguage();
     setTimeout(() => {
       accessCheck();
     }, 10000);
@@ -73,7 +76,7 @@ const Router: React.FC = () => {
     }
   };
 
-  const loadLanguage = () => {
+  const loadLanguage = async (lng: 'en' | 'ar') => {
     i18n.use(initReactI18next).init({
       compatibilityJSON: 'v3',
       resources: {
@@ -84,7 +87,7 @@ const Router: React.FC = () => {
           translation: Arabic,
         },
       },
-      lng: sysLng,
+      lng: lng,
       fallbackLng: 'en',
       interpolation: {
         escapeValue: false,
