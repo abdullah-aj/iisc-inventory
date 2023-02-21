@@ -45,7 +45,7 @@ const Menu: React.FC<propsType> = (props: propsType) => {
         </View>
       </DrawerContentScrollView>
       <View style={styles.version}>
-        <Text style={styles.versionText}>v: 0.02</Text>
+        <Text style={styles.versionText}>v: 1.5</Text>
       </View>
     </>
   );
