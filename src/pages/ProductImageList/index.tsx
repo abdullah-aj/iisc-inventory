@@ -30,7 +30,7 @@ export const ProductImageList = () => {
         code: route?.params?.code,
       });
     } else {
-      navigation.push('assetData', {
+      navigation.push('dataFields', {
         code: route?.params?.code,
         prevData: route.params.prevData,
       });

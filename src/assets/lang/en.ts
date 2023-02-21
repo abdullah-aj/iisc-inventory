@@ -37,4 +37,30 @@ export const English = {
   'camera-permission-msg': 'Please allow this app to use the camera',
   photo: 'PHOTO',
   'take-photos': 'TAKE PHOTOS',
+  'location-permission-msg':
+    'Go to Settings and allow location permission for this app',
+  'go-to-settings': 'Go to Settings',
+  'device-location-obtained': 'Device Location Obtained',
+  'request-device-location': 'Request Device Location',
+  'asset-data': 'ASSET DATA',
+  'asset-description': 'Asset Description',
+  city: 'City',
+  'building-number': 'Building Number',
+  'floor-number': 'Floor Number',
+  'room-office-number': 'Room / Office Number',
+  manufacturer: 'Manufacturer',
+  'there-were': 'There were',
+  'assets-to-save-and': 'assets to save, and',
+  'assets-encountered-errors': 'assets encountered errors',
+  'following-bar-codes-encountered-error':
+    'Following Bar-Codes encountered an error while saving',
+  'data-of-failed-bar-Codes-have-been-deleted':
+    'Data of Failed bar-Codes have been deleted. You can try again with fresh data',
+  'if-the-error-persists-then-contact-administrator':
+    'If the error persists, then contact Administrator',
+  ok: 'OK',
+  'assets-saved-successfully': 'assets saved successfully',
+  success: 'SUCCESS',
+  finish: 'FINISH',
+  'add-symmetrical-asset': 'ADD SYMMETRICAL ASSET',
 };

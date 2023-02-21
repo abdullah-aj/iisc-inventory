@@ -10,9 +10,11 @@ import {Button} from '@rneui/themed';
 import {useProduct} from '../../hooks/useProduct';
 import axios from 'axios';
 import {API_URL} from '../../utils/constants';
+import {useTranslation} from 'react-i18next';
 
 export const FinishScreen = () => {
   const {addData, products, updateAfterSubmit} = useProduct();
+  const {t} = useTranslation();
 
   const navigation = useNavigation<any>();
   const route: any = useRoute();
@@ -53,28 +55,32 @@ export const FinishScreen = () => {
     const fail = res.filter(item => item === false);
     if (fail.length) {
       Alert.alert(
-        'ERROR',
-        `There were ${res.length} assets to save, and ${
+        t('error'),
+        `${t('there-were')} ${res.length} ${t('assets-to-save-and')} ${
           fail.length
-        } assets encountered errors
-        \n\nFollowing Bar-Codes encountered an error while saving
+        } ${t('assets-encountered-errors')}
+        \n\n${t('following-bar-codes-encountered-error')}
         \n${failedCodes.join('\n')}
-        \nData of Failed bar-Codes have been deleted. You can try again with fresh data
-        \nIf the error persists, then contact Administrator`,
+        \n${t('data-of-failed-bar-Codes-have-been-deleted')}
+        \n${t('if-the-error-persists-then-contact-administrator')}`,
         [
           {
-            text: 'OK',
+            text: t('ok') as string,
             onPress: () => navigation.push('home'),
           },
         ],
       );
     } else {
-      Alert.alert('SUCCESS', `${res.length} assets saved successfully`, [
-        {
-          text: 'OK',
-          onPress: () => navigation.push('home'),
-        },
-      ]);
+      Alert.alert(
+        t('success'),
+        `${res.length} ${t('assets-saved-successfully')}`,
+        [
+          {
+            text: t('ok') as string,
+            onPress: () => navigation.push('home'),
+          },
+        ],
+      );
     }
   };
 
@@ -262,7 +268,7 @@ export const FinishScreen = () => {
   };
 
   return (
-    <FullPage title="FINISH" hasBackBtn={false}>
+    <FullPage title={t('finish')} hasBackBtn={false}>
       <View style={styles.centerContainer}>
         <View style={styles.innerCircle}>
           <View>
@@ -278,7 +284,7 @@ export const FinishScreen = () => {
                   disabledStyle={CommonStyles.buttonDisabledStyle}
                   containerStyle={CommonStyles.buttonContainerStyle}
                   onPress={handleFinish}
-                  title="FINISH"
+                  title={t('finish') as string}
                   titleStyle={CommonStyles.buttonTitleStyle}
                 />
                 <Text style={styles.textStyle}>OR</Text>
@@ -288,7 +294,7 @@ export const FinishScreen = () => {
                   disabledStyle={CommonStyles.buttonDisabledStyle}
                   containerStyle={CommonStyles.buttonContainerStyle}
                   onPress={handleSymmetricalFinish}
-                  title="ADD SYMMETRICAL ASSET"
+                  title={t('add-symmetrical-asset') as string}
                   titleStyle={CommonStyles.outlineBtnTextStyle}
                 />
               </>
