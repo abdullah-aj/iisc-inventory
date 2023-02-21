@@ -12,11 +12,6 @@ import axios from 'axios';
 import {API_URL} from '../../utils/constants';
 import {useTranslation} from 'react-i18next';
 
-const validation = Yup.object().shape({
-  entityCode: Yup.string().required('Required'),
-  entity: Yup.string().required('Required'),
-});
-
 type FormValues = {
   entityCode: string;
   entity: string;
@@ -33,6 +28,11 @@ export const EntityData = () => {
   const [entities, setEntities] = useState<EntityType[]>([]);
 
   const {t} = useTranslation();
+
+  const validation = Yup.object().shape({
+    entityCode: Yup.string().required(t('required') as string),
+    entity: Yup.string().required(t('required') as string),
+  });
 
   useEffect(() => {
     (async () => {
@@ -66,7 +66,7 @@ export const EntityData = () => {
   };
 
   return (
-    <FullPage title={'ENTITY DATA'} hasBackBtn={true}>
+    <FullPage title={t('entity-data')} hasBackBtn={true}>
       <View style={styles.container}>
         <View style={styles.formArea}>
           <Formik
@@ -87,13 +87,15 @@ export const EntityData = () => {
             }) => (
               <View>
                 <View style={CommonStyles.ddContainer}>
-                  <Text style={CommonStyles.ddTitleText}>Entity Name</Text>
+                  <Text style={CommonStyles.ddTitleText}>
+                    {t('entity-name')}
+                  </Text>
                   <DropDownPicker
                     loading={entities.length === 0}
                     listMode="SCROLLVIEW"
                     //searchable={true}
                     key={'entity-name'}
-                    placeholder="Select Entity"
+                    placeholder={t('select-entity') as string}
                     placeholderStyle={CommonStyles.ddPlaceholderStyle}
                     containerStyle={CommonStyles.ddContainerStyle}
                     style={CommonStyles.ddStyle}
@@ -133,9 +135,9 @@ export const EntityData = () => {
                         ? errors.entityCode
                         : undefined
                     }
-                    label="Entity Code"
+                    label={t('entity-code')}
                     labelStyle={CommonStyles.labelStyle}
-                    placeholder="Entity Code"
+                    placeholder={t('entity-code') as string}
                     //onBlur={() => setFieldTouched('entityCode')}
                     //onChangeText={value => setFieldValue('entityCode', value)}
                     value={values.entityCode}
@@ -151,7 +153,7 @@ export const EntityData = () => {
                     disabledStyle={CommonStyles.buttonDisabledStyle}
                     containerStyle={CommonStyles.buttonContainerStyle}
                     onPress={handleSubmit}
-                    title="NEXT"
+                    title={t('next') as string}
                     titleStyle={CommonStyles.buttonTitleStyle}
                   />
                 </View>

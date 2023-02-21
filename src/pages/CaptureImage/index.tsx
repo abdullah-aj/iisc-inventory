@@ -4,8 +4,8 @@ import {
   StyleSheet,
   View,
   Linking,
-  PermissionsAndroid,
-  Platform,
+  // PermissionsAndroid,
+  // Platform,
   Image,
   Alert,
 } from 'react-native';
@@ -18,8 +18,9 @@ import Toast from 'react-native-toast-message';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {Icon} from '@rneui/themed';
 import {CameraPage} from '../../components/Camera/CameraPage';
-import {CameraRoll} from '@react-native-camera-roll/camera-roll';
+// import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import {useProduct} from '../../hooks/useProduct';
+import {useTranslation} from 'react-i18next';
 
 type ImageType = {
   path: string;
@@ -31,6 +32,7 @@ export const CaptureImage = () => {
   const route: any = useRoute();
   const {addImage, getProduct} = useProduct();
 
+  const {t} = useTranslation();
   const [openCamera, setOpenCamera] = useState(false);
   const [imageSource, setImageSource] = useState<any>(null);
 
@@ -59,8 +61,8 @@ export const CaptureImage = () => {
       if (cameraPermission === 'denied' || cameraPermission === 'restricted') {
         Toast.show({
           type: 'error',
-          text1: 'Permission Denied',
-          text2: 'Please allow this app to use the camera',
+          text1: t('permission-denied') as string,
+          text2: t('camera-permission-msg') as string,
           onHide: () => Linking.openSettings(),
         });
       } else {
@@ -74,7 +76,7 @@ export const CaptureImage = () => {
 
   const onImageCapture = async (image: ImageType) => {
     setOpenCamera(false);
-    const {path, type} = image;
+    const {path} = image; // {path, type}
     if (route?.params?.code) {
       const uri = `file://${path}`; //await saveImage(path, type);
       if (uri) {
@@ -89,7 +91,10 @@ export const CaptureImage = () => {
         prevData: route.params.prevData,
       });
     } else {
-      Alert.alert('CODE NOT FOUND', 'Please Scan the Barcode again');
+      Alert.alert(
+        t('code-not-found'),
+        t('error-please-scan-barcode') as string,
+      );
     }
   };
 
@@ -103,53 +108,53 @@ export const CaptureImage = () => {
     );
   };
 
-  const requestSavePermission = async (): Promise<boolean> => {
-    if (Platform.OS !== 'android') return true;
+  // const requestSavePermission = async (): Promise<boolean> => {
+  //   if (Platform.OS !== 'android') return true;
 
-    const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
-    if (permission == null) return false;
-    let hasPermission = await PermissionsAndroid.check(permission);
-    if (!hasPermission) {
-      const permissionRequestResult = await PermissionsAndroid.request(
-        permission,
-      );
-      hasPermission = permissionRequestResult === 'granted';
-    }
-    return hasPermission;
-  };
+  //   const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
+  //   if (permission == null) return false;
+  //   let hasPermission = await PermissionsAndroid.check(permission);
+  //   if (!hasPermission) {
+  //     const permissionRequestResult = await PermissionsAndroid.request(
+  //       permission,
+  //     );
+  //     hasPermission = permissionRequestResult === 'granted';
+  //   }
+  //   return hasPermission;
+  // };
 
-  const saveImage = async (path: string, type: 'photo' | 'video') => {
-    try {
-      const hasPermission = await requestSavePermission();
-      if (!hasPermission) {
-        Toast.show({
-          type: 'error',
-          text1: 'Permission Denied',
-          text2: 'Please allow this app save image to device storage',
-          onHide: () => Linking.openSettings(),
-        });
-        return;
-      }
-      return await CameraRoll.save(`file://${path}`, {
-        type: type,
-      });
-    } catch (e) {
-      const message = e instanceof Error ? e.message : JSON.stringify(e);
-      Toast.show({
-        type: 'error',
-        text1: 'Failed to save',
-        text2: `An unexpected error occurred while trying to save your ${type}. ${message}`,
-      });
-      return false;
-    }
-  };
+  // const saveImage = async (path: string, type: 'photo' | 'video') => {
+  //   try {
+  //     const hasPermission = await requestSavePermission();
+  //     if (!hasPermission) {
+  //       Toast.show({
+  //         type: 'error',
+  //         text1: 'Permission Denied',
+  //         text2: 'Please allow this app save image to device storage',
+  //         onHide: () => Linking.openSettings(),
+  //       });
+  //       return;
+  //     }
+  //     return await CameraRoll.save(`file://${path}`, {
+  //       type: type,
+  //     });
+  //   } catch (e) {
+  //     const message = e instanceof Error ? e.message : JSON.stringify(e);
+  //     Toast.show({
+  //       type: 'error',
+  //       text1: 'Failed to save',
+  //       text2: `An unexpected error occurred while trying to save your ${type}. ${message}`,
+  //     });
+  //     return false;
+  //   }
+  // };
 
   return (
     <>
       {openCamera ? (
         <CameraPage onCapture={onImageCapture} />
       ) : (
-        <FullPage title="TAKING PHOTO" hasBackBtn={true}>
+        <FullPage title={t('taking-photo')} hasBackBtn={true}>
           <View style={styles.container}>
             <BorderBox
               height={Sizes.windowWidth * 0.7}
@@ -173,7 +178,11 @@ export const CaptureImage = () => {
                 disabledStyle={CommonStyles.buttonDisabledStyle}
                 containerStyle={CommonStyles.buttonContainerStyle}
                 onPress={handleCaptureImage}
-                title={imageSource ? 'CAPTURE AGAIN' : 'CAPTURE'}
+                title={
+                  imageSource
+                    ? (t('capture-again') as string)
+                    : (t('capture') as string)
+                }
                 titleStyle={CommonStyles.buttonTitleStyle}
               />
             </View>

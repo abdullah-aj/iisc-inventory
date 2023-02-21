@@ -5,16 +5,19 @@ import {Colors, Sizes} from '../../assets/Theme';
 import FullPage from '../../components/layouts/full-page/FullPage';
 import {CommonStyles} from '../../assets/CommonStyle';
 import {useNavigation} from '@react-navigation/native';
+import {useTranslation} from 'react-i18next';
 
 export const Home = () => {
   const navigation = useNavigation<any>();
+
+  const {t} = useTranslation();
 
   const handleAddAsset = () => {
     navigation.push('entityData');
   };
 
   return (
-    <FullPage title="ADDING ASSET">
+    <FullPage title={t('adding-asset')}>
       <View style={styles.centerContainer}>
         <View style={styles.innerCircle}>
           <Button
@@ -22,7 +25,7 @@ export const Home = () => {
             disabledStyle={CommonStyles.buttonDisabledStyle}
             containerStyle={CommonStyles.buttonContainerStyle}
             onPress={handleAddAsset}
-            title="ADD ASSET"
+            title={t('add-asset') as string}
             titleStyle={CommonStyles.buttonTitleStyle}
           />
         </View>

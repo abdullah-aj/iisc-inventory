@@ -7,6 +7,7 @@ import {Button} from '@rneui/themed';
 import {ProdType, useProduct} from '../../hooks/useProduct';
 import {CommonStyles} from '../../assets/CommonStyle';
 import DropDownPicker from 'react-native-dropdown-picker';
+import {useTranslation} from 'react-i18next';
 
 const DATE = Date.now();
 
@@ -15,15 +16,17 @@ export const TypeSelection = () => {
   const route = useRoute<any>();
   const {addBarcode} = useProduct();
 
+  const {t} = useTranslation();
+
   const [selectedProd, setSelectedProd] = useState<ProdType | ''>('');
   const [open, setOpen] = useState(false);
   const [typeList, setTypeList] = useState([
-    {label: 'Infrastructure', value: 'INFRASTRUCTURE'},
-    {label: 'Machinery and equipment', value: 'MACHINE'},
-    {label: 'Public transportation assets', value: 'TRANSPORT'},
-    {label: 'Furniture', value: 'FURNITURE'},
-    {label: 'plants and animals', value: 'BIO'},
-    {label: 'Intangible assets', value: 'INTANGIBLE'},
+    {label: t('infrastructure'), value: 'INFRASTRUCTURE'},
+    {label: t('machinery-and-equipment'), value: 'MACHINE'},
+    {label: t('public-transportation-assets'), value: 'TRANSPORT'},
+    {label: t('furniture'), value: 'FURNITURE'},
+    {label: t('plants-and-animals'), value: 'BIO'},
+    {label: t('intangible assets'), value: 'INTANGIBLE'},
   ]);
   const [fakeCode, setFakeCode] = useState('');
   const [prevData, setPrevData] = useState<any>(null);
@@ -56,13 +59,13 @@ export const TypeSelection = () => {
   }, [route.params]);
 
   return (
-    <FullPage title="ASSET TYPE" hasBackBtn={true} disableScroll={true}>
+    <FullPage title={t('asset-type')} hasBackBtn={true} disableScroll={true}>
       <View style={styles.centerContainer}>
         <View style={styles.innerCircle}>
           <View>
             <DropDownPicker
               key={'asset-type'}
-              placeholder="Select Asset Type"
+              placeholder={t('select-asset-type') as string}
               placeholderStyle={CommonStyles.ddPlaceholderStyle}
               containerStyle={CommonStyles.ddContainerStyle}
               style={[CommonStyles.ddStyle, styles.ddStyle]}
@@ -84,7 +87,7 @@ export const TypeSelection = () => {
             disabledStyle={CommonStyles.buttonDisabledStyle}
             containerStyle={CommonStyles.buttonContainerStyle}
             onPress={handleBtnPress}
-            title="NEXT"
+            title={t('next') as string}
             titleStyle={CommonStyles.buttonTitleStyle}
           />
         </View>

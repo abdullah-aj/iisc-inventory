@@ -7,6 +7,7 @@ import {CommonStyles} from '../../assets/CommonStyle';
 import {Button} from '@rneui/themed';
 import {CameraButton} from '../../components/CameraButton/CameraButton';
 import {useProduct, Product} from '../../hooks/useProduct';
+import {useTranslation} from 'react-i18next';
 
 type ImgListType = {
   id: number;
@@ -17,6 +18,7 @@ export const ProductImageList = () => {
   const navigation = useNavigation<any>();
   const route: any = useRoute();
   const {getProduct, addData, addType} = useProduct();
+  const {t} = useTranslation();
 
   const [imgList, setImgList] = useState<Array<ImgListType>>([]);
   const [hasAllImages, setHasAllImages] = useState(false);
@@ -80,13 +82,13 @@ export const ProductImageList = () => {
   }, [route.params]);
 
   return (
-    <FullPage title="TAKE PHOTOS" hasBackBtn={true}>
+    <FullPage title={t('take-photos')} hasBackBtn={true}>
       <View style={styles.container}>
         <View style={styles.cameraContainer}>
           {imgList.map((item: ImgListType, i: number) => (
             <CameraButton
               key={`camera-btn-${i}`}
-              text="PHOTO"
+              text={t('photo')}
               id={item.id}
               onPress={handleCameraClick}
               path={item.path}
@@ -100,7 +102,7 @@ export const ProductImageList = () => {
             disabledStyle={CommonStyles.buttonDisabledStyle}
             containerStyle={CommonStyles.buttonContainerStyle}
             onPress={handleNext}
-            title="NEXT"
+            title={t('next') as string}
             titleStyle={CommonStyles.buttonTitleStyle}
           />
         </View>

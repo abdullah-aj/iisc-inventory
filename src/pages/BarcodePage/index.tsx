@@ -12,6 +12,7 @@ import {Barcode} from 'vision-camera-code-scanner';
 import {useProduct} from '../../hooks/useProduct';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {Input} from '@rneui/themed';
+import {useTranslation} from 'react-i18next';
 
 export const BarcodePage = () => {
   const route: any = useRoute();
@@ -22,6 +23,8 @@ export const BarcodePage = () => {
   const [barCode, setBarCode] = useState('');
   const [scannerUsed, setScannerUsed] = useState(false);
   const [updateCheck, setUpdateCheck] = useState(false);
+
+  const {t} = useTranslation();
 
   const handleBarcodeScan = async () => {
     let cameraPermission = await Camera.getCameraPermissionStatus();
@@ -71,7 +74,7 @@ export const BarcodePage = () => {
       addBarcode(barCode, type);
       setUpdateCheck(true);
     } else {
-      Alert.alert('ERROR', 'There was an error, Please try again');
+      Alert.alert(t('error'), t('error-msg') as string);
     }
   };
 
@@ -100,7 +103,7 @@ export const BarcodePage = () => {
       {openScanner ? (
         <BarcodeScanner onCapture={onCodeCapture} />
       ) : (
-        <FullPage title="ADDING ASSET" hasBackBtn={true}>
+        <FullPage title={t('adding-asset')} hasBackBtn={true}>
           <View style={styles.container}>
             <BorderBox
               height={Sizes.windowWidth * 0.7}
@@ -119,9 +122,9 @@ export const BarcodePage = () => {
                 disabledInputStyle={CommonStyles.disabledInputStyle}
                 inputContainerStyle={CommonStyles.inputContainerStyle}
                 errorMessage={''}
-                label="Barcode"
+                label={t('barcode')}
                 labelStyle={CommonStyles.labelStyle}
-                placeholder="Manually Enter Barcode"
+                placeholder={t('manually-enter-barcode') as string}
                 onChangeText={setBarCode}
                 keyboardType={'number-pad'}
               />
@@ -132,7 +135,11 @@ export const BarcodePage = () => {
                 disabledStyle={CommonStyles.buttonDisabledStyle}
                 containerStyle={CommonStyles.buttonContainerStyle}
                 onPress={handleBarcodeScan}
-                title={scannerUsed ? 'SCAN AGAIN' : 'SCAN'}
+                title={
+                  scannerUsed
+                    ? (t('scan-again') as string)
+                    : (t('scan') as string)
+                }
                 titleStyle={CommonStyles.buttonTitleStyle}
               />
               <Button
@@ -141,7 +148,7 @@ export const BarcodePage = () => {
                 disabledStyle={CommonStyles.buttonDisabledStyle}
                 containerStyle={CommonStyles.buttonContainerStyle}
                 onPress={handleNextClick}
-                title="NEXT"
+                title={t('next') as string}
                 titleStyle={CommonStyles.buttonTitleStyle}
               />
             </View>
