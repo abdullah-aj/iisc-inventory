@@ -117,7 +117,7 @@ export const FinishScreen = () => {
         if (product.data?.baseUnitOfMeasure)
           formData.append('base_unit', product.data.baseUnitOfMeasure);
         if (product.data?.assetDescription)
-          formData.append('name', product.data.assetDescription);
+          formData.append('asset_description', product.data.assetDescription);
         if (product.data?.uniqueAssetNumber)
           formData.append(
             'unique_asset_number_entity',
