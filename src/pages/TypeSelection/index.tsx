@@ -69,7 +69,10 @@ export const TypeSelection = () => {
               placeholderStyle={CommonStyles.ddPlaceholderStyle}
               containerStyle={CommonStyles.ddContainerStyle}
               style={[CommonStyles.ddStyle, styles.ddStyle]}
-              dropDownContainerStyle={CommonStyles.dropDownContainerStyle}
+              dropDownContainerStyle={[
+                CommonStyles.dropDownContainerStyle,
+                styles.ddContainerStyle,
+              ]}
               labelStyle={CommonStyles.ddLabelText}
               disabled={false}
               open={open}
@@ -122,6 +125,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   ddStyle: {
+    width: Sizes.windowWidth * 0.6,
+  },
+  ddContainerStyle: {
     width: Sizes.windowWidth * 0.6,
   },
 });

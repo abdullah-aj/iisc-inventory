@@ -67,4 +67,5 @@ export const English = {
   help: 'Help',
   logout: 'Logout',
   'select-language': 'Select Language',
+  'loading-asset-description': 'Loading Asset Description',
 };

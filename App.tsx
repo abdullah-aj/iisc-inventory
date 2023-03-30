@@ -7,6 +7,7 @@ import {ProductProvider} from './src/hooks/useProduct';
 import {ThemeProvider, createTheme} from '@rneui/themed';
 import {LangProvider} from './src/contexts/LangContext';
 import {I18nManager} from 'react-native';
+import {DescriptionProvider} from './src/hooks/useDescription';
 
 I18nManager.allowRTL(false);
 I18nManager.doLeftAndRightSwapInRTL = false;
@@ -20,8 +21,10 @@ const App = () => {
         <AuthProvider>
           <ProductProvider>
             <LangProvider>
-              <Router />
-              <Toast />
+              <DescriptionProvider>
+                <Router />
+                <Toast />
+              </DescriptionProvider>
             </LangProvider>
           </ProductProvider>
         </AuthProvider>

@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useAsyncStorage} from '@react-native-async-storage/async-storage';
 import {STORAGE_KEY} from '../utils/constants';
 import {PRODUCT_KEY} from './useProduct';
+import {DESCRIPTION_KEY} from './useDescription';
 import axios from 'axios';
 import {API_URL, TOKEN} from '../utils/constants';
 import RNRestart from 'react-native-restart';
@@ -83,6 +84,7 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
     await AsyncStorage.clear();
     await AsyncStorage.removeItem(USER_DATA_KEY);
     await AsyncStorage.removeItem(PRODUCT_KEY);
+    await AsyncStorage.removeItem(DESCRIPTION_KEY);
     RNRestart.Restart();
   };
 

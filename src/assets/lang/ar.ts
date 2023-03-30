@@ -67,4 +67,5 @@ export const Arabic = {
   help: 'يساعد',
   logout: 'تسجيل خروج',
   'select-language': 'اختار اللغة',
+  'loading-asset-description': 'تحميل وصف الأصل',
 };

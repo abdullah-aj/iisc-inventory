@@ -4,7 +4,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import FullPage from '../../components/layouts/full-page/FullPage';
 import {Sizes, Colors} from '../../assets/Theme';
 import {CommonStyles} from '../../assets/CommonStyle';
-import {Button, Input} from '@rneui/themed';
+import {Button, Input, Icon, Dialog} from '@rneui/themed';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import Geolocation from '@react-native-community/geolocation';
@@ -13,6 +13,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import {API_URL} from '../../utils/constants';
 import {useTranslation} from 'react-i18next';
 import axios from 'axios';
+import {useDescription} from '../../hooks/useDescription';
 
 type FormValues = {
   assetDescription: string;
@@ -35,15 +36,17 @@ type ListType = {
 
 export const DataFields = () => {
   const {t} = useTranslation();
-
   const navigation = useNavigation<any>();
   const route: any = useRoute();
+  const {addDescription, description} = useDescription();
+
   const [code, setCode] = useState<string>('');
   const [prevData, setPrevData] = useState<any>(null);
   const [geoPermission, setGeoPermission] = useState<boolean>(false);
   const [location, setLocation] = useState<LocationType>();
   const [assetDdOpen, setAssetDdOpen] = useState<boolean>(false);
   const [assetList, setAssetList] = useState<ListType[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const validation = Yup.object().shape({
     assetDescription: Yup.string().required(t('required') as string),
@@ -57,16 +60,14 @@ export const DataFields = () => {
       setCode(route.params.code);
       setPrevData(route.params.prevData);
       (async () => {
-        const data = await getAssetList();
-        if (data.payload && data.payload.data) {
-          const dt = data.payload.data.map((item: any) => ({
-            value: item.id,
-            label: item.name,
-          }));
-          setAssetList(dt);
+        if (description.length === 0) {
+          await handleDescriptionLoad();
+        } else {
+          setAssetList(description);
         }
       })();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [route.params]);
 
   useEffect(() => {
@@ -78,12 +79,20 @@ export const DataFields = () => {
 
   useEffect(() => {
     if (geoPermission) {
-      Geolocation.getCurrentPosition(info => {
-        setLocation({
-          latitude: info.coords.latitude,
-          longitude: info.coords.longitude,
-        });
-      });
+      Geolocation.getCurrentPosition(
+        info => {
+          setLocation({
+            latitude: info.coords.latitude,
+            longitude: info.coords.longitude,
+          });
+        },
+        error => {
+          Alert.alert(
+            'Error',
+            `${error.message}\n\nPlease enable device location.`,
+          );
+        },
+      );
     }
   }, [geoPermission]);
 
@@ -133,7 +142,26 @@ export const DataFields = () => {
     } catch (e: any) {
       console.log('==== ERROR IN GET ASSET DESCRIPTION ====');
       console.log(e.message);
+      setIsLoading(false);
+      setAssetList([]);
       return false;
+    }
+  };
+
+  const handleDescriptionLoad = async () => {
+    setIsLoading(true);
+    const data = await getAssetList();
+    if (data.payload) {
+      const dt = data.payload.map((item: any) => ({
+        value: item.id,
+        label: item.name,
+      }));
+      setAssetList(dt);
+      addDescription(dt);
+      setIsLoading(false);
+    } else {
+      setIsLoading(false);
+      Alert.alert('Error', 'Asset Description could not bbe fetched');
     }
   };
 
@@ -181,32 +209,53 @@ export const DataFields = () => {
                   <Text style={CommonStyles.ddTitleText}>
                     {t('asset-description')}
                   </Text>
-                  <DropDownPicker
-                    listMode="MODAL"
-                    loading={true}
-                    searchable={true}
-                    key={'asset-description'}
-                    placeholder={t('asset-description') as string}
-                    placeholderStyle={CommonStyles.ddPlaceholderStyle}
-                    containerStyle={CommonStyles.ddContainerStyle}
-                    style={CommonStyles.ddStyle}
-                    dropDownContainerStyle={CommonStyles.dropDownContainerStyle}
-                    labelStyle={CommonStyles.ddLabelText}
-                    disabled={false}
-                    open={assetDdOpen}
-                    value={values.assetDescription}
-                    items={assetList}
-                    setOpen={val => {
-                      setAssetDdOpen(val);
-                      if (!val) {
-                        setFieldTouched('assetDescription');
+                  <View style={styles.descriptionDdContainer}>
+                    <DropDownPicker
+                      listMode="MODAL"
+                      loading={true}
+                      searchable={true}
+                      key={'asset-description'}
+                      placeholder={t('asset-description') as string}
+                      placeholderStyle={CommonStyles.ddPlaceholderStyle}
+                      containerStyle={[
+                        CommonStyles.ddContainerStyle,
+                        {
+                          width: Sizes.windowWidth * 0.76,
+                        },
+                      ]}
+                      style={CommonStyles.ddStyle}
+                      dropDownContainerStyle={
+                        CommonStyles.dropDownContainerStyle
                       }
-                    }}
-                    setValue={fn => {
-                      const value = fn(values.assetDescription);
-                      setFieldValue('assetDescription', value);
-                    }}
-                  />
+                      labelStyle={CommonStyles.ddLabelText}
+                      disabled={false}
+                      open={assetDdOpen}
+                      value={values.assetDescription}
+                      items={assetList}
+                      setOpen={val => {
+                        setAssetDdOpen(val);
+                        if (!val) {
+                          setFieldTouched('assetDescription');
+                        }
+                      }}
+                      setValue={fn => {
+                        const value = fn(values.assetDescription);
+                        setFieldValue('assetDescription', value);
+                      }}
+                    />
+                    <Button
+                      disabled={isSubmitting}
+                      buttonStyle={[CommonStyles.buttonStyle]}
+                      onPress={handleDescriptionLoad}
+                      titleStyle={CommonStyles.buttonTitleStyle}>
+                      <Icon
+                        name="cloud-refresh"
+                        color="white"
+                        type="material-community"
+                      />
+                    </Button>
+                  </View>
+
                   <Text style={CommonStyles.ddErrorText}>
                     {touched.assetDescription && errors.assetDescription
                       ? errors.assetDescription
@@ -313,6 +362,14 @@ export const DataFields = () => {
             )}
           </Formik>
         </View>
+        <Dialog isVisible={isLoading}>
+          <Dialog.Loading
+            loadingProps={{size: 'large', color: Colors.primary_color_1}}
+          />
+          <Text style={styles.loaderText}>
+            {t('loading-asset-description')}
+          </Text>
+        </Dialog>
       </View>
     </FullPage>
   );
@@ -345,5 +402,11 @@ const styles = StyleSheet.create({
   locationButtonTitleStyle: {
     color: Colors.primary_color_1,
     paddingBottom: 10,
+  },
+  descriptionDdContainer: {
+    flexDirection: 'row',
+  },
+  loaderText: {
+    alignSelf: 'center',
   },
 });
