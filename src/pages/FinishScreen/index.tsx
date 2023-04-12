@@ -52,7 +52,7 @@ export const FinishScreen = () => {
 
     //updateAfterSubmit([...toUpdate]);
     updateAfterSubmit([]);
-    const fail = res.filter(item => item === false);
+    const fail = res.filter(item => item !== true);
     if (fail.length) {
       Alert.alert(
         t('error'),
@@ -61,7 +61,9 @@ export const FinishScreen = () => {
         } ${t('assets-encountered-errors')}
         \n\n${t('following-bar-codes-encountered-error')}
         \n${failedCodes.join('\n')}
-        \n${t('data-of-failed-bar-Codes-have-been-deleted')}
+        \n\nError Detail
+        \n${fail.join('\n')}
+        \n\n${t('data-of-failed-bar-Codes-have-been-deleted')}
         \n${t('if-the-error-persists-then-contact-administrator')}`,
         [
           {
@@ -249,9 +251,14 @@ export const FinishScreen = () => {
             },
           });
           if (response.data.status === 'error') {
-            console.log(response.data);
-            console.log('=== ERROR FROM SERVER ===');
-            return false;
+            if (response.data.messages) {
+              const errs = Object.values(response.data.messages);
+              return errs.join('\n');
+            } else {
+              console.log(response.data);
+              console.log('=== ERROR FROM SERVER ===');
+              return 'Unknown response from server';
+            }
           } else {
             console.log(response.data);
             console.log('=== SUCCESS ===');
@@ -261,7 +268,7 @@ export const FinishScreen = () => {
           console.log('=== ERROR IN CATCH ===');
           console.log('ERROR RESPONSE: ', error.response);
           console.log('ERROR MESSAGE: ', error.message);
-          return false;
+          return 'API Error';
         }
       }),
     );
