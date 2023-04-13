@@ -268,7 +268,7 @@ export const FinishScreen = () => {
           console.log('=== ERROR IN CATCH ===');
           console.log('ERROR RESPONSE: ', error.response);
           console.log('ERROR MESSAGE: ', error.message);
-          return 'API Error';
+          return `API Error: ${error.message}`;
         }
       }),
     );
