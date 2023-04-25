@@ -11,7 +11,6 @@ import {
   PhotoFile,
   sortFormats,
   useCameraDevices,
-  VideoFile,
 } from 'react-native-vision-camera';
 import {Camera, frameRateIncluded} from 'react-native-vision-camera';
 import {
@@ -44,6 +43,8 @@ const BUTTON_SIZE = 40;
 type Image = {
   path: string;
   type: 'photo' | 'video';
+  width: number;
+  height: number;
 };
 
 type Props = {
@@ -118,11 +119,13 @@ export function CameraPage({onCapture}: Props): React.ReactElement {
     setIsCameraInitialized(true);
   }, []);
   const onMediaCaptured = useCallback(
-    (media: PhotoFile | VideoFile, type: 'photo' | 'video') => {
+    (media: PhotoFile, type: 'photo') => {
       console.log(`Media captured! ${JSON.stringify(media)}`);
       onCapture({
         path: media.path,
         type: type,
+        height: media.height,
+        width: media.width,
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -214,6 +217,7 @@ export function CameraPage({onCapture}: Props): React.ReactElement {
       <CaptureButton
         style={styles.captureButton}
         camera={camera}
+        // @ts-expect-error
         onMediaCaptured={onMediaCaptured}
         cameraZoom={zoom}
         minZoom={minZoom}

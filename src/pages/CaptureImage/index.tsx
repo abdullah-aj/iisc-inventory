@@ -21,10 +21,14 @@ import {CameraPage} from '../../components/Camera/CameraPage';
 // import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import {useProduct} from '../../hooks/useProduct';
 import {useTranslation} from 'react-i18next';
+import {calcAspectRatio} from '../../utils/functions';
+import ImageResizer from 'react-native-image-resizer';
 
 type ImageType = {
   path: string;
   type: 'photo' | 'video';
+  width: number;
+  height: number;
 };
 
 export const CaptureImage = () => {
@@ -75,27 +79,54 @@ export const CaptureImage = () => {
   };
 
   const onImageCapture = async (image: ImageType) => {
+    const size = calcAspectRatio(image.width, image.height, 2000, 2000);
     setOpenCamera(false);
-    const {path} = image; // {path, type}
-    if (route?.params?.code) {
-      const uri = `file://${path}`; //await saveImage(path, type);
-      if (uri) {
-        setImageSource({uri: uri});
-        addImage(route.params.code, {id: route.params.id, path: uri});
-      }
-      // setImageSource({uri: `file://${path}`});
 
-      navigation.push('productImageList', {
-        code: route.params.code,
-        symmetricalTo: route?.params?.symmetricalTo,
-        prevData: route.params.prevData,
+    ImageResizer.createResizedImage(
+      image.path,
+      size.width,
+      size.height,
+      'JPEG',
+      80,
+      0,
+      undefined,
+    )
+      .then(response => {
+        // setSelectedImage({
+        //   image: response.path,
+        // });
+        // const {path} = image; // {path, type}
+        if (route?.params?.code) {
+          const uri = `file://${response.path}`; //await saveImage(path, type);
+          if (uri) {
+            setImageSource({uri: uri});
+            addImage(route.params.code, {id: route.params.id, path: uri});
+          }
+          // setImageSource({uri: `file://${path}`});
+
+          navigation.push('productImageList', {
+            code: route.params.code,
+            symmetricalTo: route?.params?.symmetricalTo,
+            prevData: route.params.prevData,
+          });
+        } else {
+          Alert.alert(
+            t('code-not-found'),
+            t('error-please-scan-barcode') as string,
+          );
+        }
+
+        // response.uri is the URI of the new image that can now be displayed, uploaded...
+        // response.path is the path of the new image
+        // response.name is the name of the new image with the extension
+        // response.size is the size of the new image
+      })
+      .catch(err => {
+        console.log('==== IMAGE RESIZE ERROR ====');
+        console.log(err.message);
       });
-    } else {
-      Alert.alert(
-        t('code-not-found'),
-        t('error-please-scan-barcode') as string,
-      );
-    }
+
+    // =============
   };
 
   const imageView = () => {

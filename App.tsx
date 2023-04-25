@@ -9,6 +9,13 @@ import {LangProvider} from './src/contexts/LangContext';
 import {I18nManager} from 'react-native';
 import {DescriptionProvider} from './src/hooks/useDescription';
 
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({ 
+  dsn: 'https://cf18deaecbd44b29a87f247ac8be6eb4@o4503958525837312.ingest.sentry.io/4505072636329984', 
+});
+
+
 I18nManager.allowRTL(false);
 I18nManager.doLeftAndRightSwapInRTL = false;
 
