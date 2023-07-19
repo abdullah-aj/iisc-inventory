@@ -9,8 +9,9 @@ import {Formik} from 'formik';
 import * as Yup from 'yup';
 import DropDownPicker from 'react-native-dropdown-picker';
 import axios from 'axios';
-import {API_URL} from '../../utils/constants';
+import {API_URL, BASE_URL} from '../../utils/constants';
 import {useTranslation} from 'react-i18next';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type FormValues = {
   entityCode: string;
@@ -48,8 +49,14 @@ export const EntityData = () => {
   }, []);
 
   const getEntities = async (): Promise<any> => {
+    let BaseUrl;
+    const  url = await AsyncStorage.getItem(
+      'baseUrl'
+    )
+    BaseUrl = JSON.parse(url)
+
     try {
-      const res = await axios.get(`${API_URL}/companies`);
+      const res = await axios.get(`${BaseUrl}/companies`);
       return res.data;
     } catch (e: any) {
       console.log('==== ERROR IN GET ENTITIES ====');

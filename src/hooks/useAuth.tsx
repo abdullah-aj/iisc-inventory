@@ -16,6 +16,8 @@ import axios from 'axios';
 import {API_URL, TOKEN} from '../utils/constants';
 import RNRestart from 'react-native-restart';
 
+
+
 export type UserType = {
   username: string;
   password: string;
@@ -40,11 +42,12 @@ export const useAuth = () => {
 
 const USER_DATA_KEY = `${STORAGE_KEY}-USER`;
 
+
 export const AuthProvider = ({children}: AuthProviderProps) => {
   const {getItem, setItem} = useAsyncStorage(USER_DATA_KEY);
 
   const [user, setUser] = useState<UserType | null>(null);
-
+  
   useEffect(() => {
     (async () => {
       const data = await getItem();
@@ -54,11 +57,22 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  
   // call this function when you want to authenticate the user
   const loginAction = async (data: UserType) => {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${TOKEN}`;
-    const res = await axios.post(`${API_URL}/account/login`, {
+    let BaseUrl;
+    let BaseToke;
+  
+    const  url = await AsyncStorage.getItem(
+      'baseUrl'
+    )
+    BaseUrl = JSON.parse(url)
+    const token  =await AsyncStorage.getItem('token')
+    BaseToke = JSON.parse(token)
+    console.log("line 12: ", BaseToke, BaseUrl)
+
+    axios.defaults.headers.common['Authorization'] = `Bearer ${BaseToke}`;
+    const res = await axios.post(`${BaseUrl}/account/login`, {
       username: data.username,
       password: data.password,
     });
@@ -83,6 +97,9 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
     axios.defaults.headers.common['Authorization'] = '';
     await AsyncStorage.clear();
     await AsyncStorage.removeItem(USER_DATA_KEY);
+    await AsyncStorage.removeItem('token');
+    await AsyncStorage.removeItem('baseUrl');
+
     await AsyncStorage.removeItem(PRODUCT_KEY);
     await AsyncStorage.removeItem(DESCRIPTION_KEY);
     RNRestart.Restart();

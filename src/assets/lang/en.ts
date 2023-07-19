@@ -68,4 +68,9 @@ export const English = {
   logout: 'Logout',
   'select-language': 'Select Language',
   'loading-asset-description': 'Loading Asset Description',
+  'enter-domain':'Enter Domain',
+  baseUrl:'Base Url',
+  "enter-baseurl":'Enter BaseUrl',
+  token:'Token',
+  'enter-token':'Enter-Token',
 };

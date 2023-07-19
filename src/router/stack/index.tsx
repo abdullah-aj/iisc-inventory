@@ -15,6 +15,7 @@ import {MachineData} from '../../pages/MachineData';
 import {IntangibleData} from '../../pages/IntangibleData';
 import {DataFields} from '../../pages/DataFields';
 import {Language} from '../../pages/Language';
+import { WelcomeScreen } from '../../pages/WelcomeScreen';
 
 const StackNavigation: React.FC = () => {
   const Stack = createNativeStackNavigator();

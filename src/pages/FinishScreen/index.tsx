@@ -11,6 +11,7 @@ import {useProduct} from '../../hooks/useProduct';
 import axios from 'axios';
 import {API_URL} from '../../utils/constants';
 import {useTranslation} from 'react-i18next';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const FinishScreen = () => {
   const {addData, products, updateAfterSubmit} = useProduct();
@@ -243,9 +244,15 @@ export const FinishScreen = () => {
           console.log(part);
         }
         console.log('------------');
-
+        console.log("url",API_URL)
+        let BaseUrl;
+        const  url = await AsyncStorage.getItem(
+          'baseUrl'
+        )
+        BaseUrl = JSON.parse(url)
+    
         try {
-          const response = await axios.post(`${API_URL}/hardware`, formData, {
+          const response = await axios.post(`${BaseUrl}/hardware`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
             },

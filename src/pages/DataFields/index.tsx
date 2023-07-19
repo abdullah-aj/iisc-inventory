@@ -14,6 +14,7 @@ import {API_URL} from '../../utils/constants';
 import {useTranslation} from 'react-i18next';
 import axios from 'axios';
 import {useDescription} from '../../hooks/useDescription';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type FormValues = {
   assetDescription: string;
@@ -136,8 +137,14 @@ export const DataFields = () => {
   };
 
   const getAssetList = async () => {
+    let BaseUrl;
+    const  url = await AsyncStorage.getItem(
+      'baseUrl'
+    )
+    BaseUrl = JSON.parse(url)
+  
     try {
-      const res = await axios.get(`${API_URL}/asset/descriptions`);
+      const res = await axios.get(`${BaseUrl}/asset/descriptions`);
       return res.data;
     } catch (e: any) {
       console.log('==== ERROR IN GET ASSET DESCRIPTION ====');

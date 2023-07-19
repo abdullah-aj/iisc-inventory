@@ -68,4 +68,9 @@ export const Arabic = {
   logout: 'تسجيل خروج',
   'select-language': 'اختار اللغة',
   'loading-asset-description': 'تحميل وصف الأصل',
+  'enter-domain':'أدخل المجال',
+  baseUrl:'عنوان URL الأساسي',
+  "enter-baseurl":'دخل عنوان URL الأساسي',
+  token:'رمز مميز',
+  'enter-token':'أدخل الرمز المميز',
 };
