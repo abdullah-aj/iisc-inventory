@@ -1,7 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect } from "react";
-
-
 export const BASE_URL = 'https://asset.mdain.com.sa';
 export const API_URL = `${BASE_URL}/api/v1`;
 export const TOKEN =
