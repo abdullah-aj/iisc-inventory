@@ -1,6 +1,6 @@
 import {Button, Header as HeaderRNE, Input} from '@rneui/themed';
 import React, {useState} from 'react';
-import {StatusBar, StyleSheet, View} from 'react-native';
+import {StatusBar, StyleSheet, View, Platform} from 'react-native';
 import {useAuth} from '../../hooks/useAuth';
 import {Colors, Sizes} from '../../assets/Theme';
 import {CommonStyles} from '../../assets/CommonStyle';
@@ -43,15 +43,19 @@ export const Login = () => {
               errorMessage={errorEmail}
               label={t('username')}
               labelStyle={CommonStyles.labelStyle}
+              //@ts-expect-error
               placeholder={t('enter-username') as string}
-              onChangeText={value => {
+              onChangeText={(value: string) => {
                 setErrorEmail('');
                 setEmail(value);
               }}
-              keyboardType={'visible-password'}
+              keyboardType={
+                Platform.OS === 'android' ? 'visible-password' : 'default'
+              }
             />
 
             <Input
+              //@ts-expect-error
               secureTextEntry={true}
               disabled={loading}
               disabledInputStyle={CommonStyles.disabledInputStyle}
@@ -60,7 +64,7 @@ export const Login = () => {
               label={t('password')}
               labelStyle={CommonStyles.labelStyle}
               placeholder={t('enter-password') as string}
-              onChangeText={value => {
+              onChangeText={(value: string) => {
                 setErrorPassword('');
                 setPassword(value);
               }}

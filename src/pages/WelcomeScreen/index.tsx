@@ -1,16 +1,14 @@
 import {Button, Header as HeaderRNE, Input} from '@rneui/themed';
 import React, {useState} from 'react';
-import {StatusBar, StyleSheet, View} from 'react-native';
-import {useAuth} from '../../hooks/useAuth';
+import {Platform, StatusBar, StyleSheet, View} from 'react-native';
 import {Colors, Sizes} from '../../assets/Theme';
 import {CommonStyles} from '../../assets/CommonStyle';
 import {useTranslation} from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 export const WelcomeScreen = () => {
-  const {loginAction} = useAuth();
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   const {t} = useTranslation();
 
@@ -23,13 +21,13 @@ export const WelcomeScreen = () => {
   const handleLogin = async () => {
     setLoading(true);
     if (!baseUrl) {
-        setErrorEmail('Enter base url')
+      setErrorEmail('Enter base url');
     } else if (!token) {
-        setErrorPassword("Enter token")
+      setErrorPassword('Enter token');
     } else {
-        await AsyncStorage.setItem('token', JSON.stringify(token))
-        await AsyncStorage.setItem('baseUrl', JSON.stringify(baseUrl))
-        navigation.navigate('login')
+      await AsyncStorage.setItem('token', JSON.stringify(token));
+      await AsyncStorage.setItem('baseUrl', JSON.stringify(baseUrl));
+      navigation.navigate('login');
     }
   };
 
@@ -38,7 +36,10 @@ export const WelcomeScreen = () => {
       <StatusBar barStyle={'dark-content'} />
       <HeaderRNE
         backgroundColor={Colors.gray_7}
-        centerComponent={{text: t('enter-domain') as string, style: styles.heading}}
+        centerComponent={{
+          text: t('enter-domain') as string,
+          style: styles.heading,
+        }}
       />
       <View style={styles.container}>
         <View style={styles.formArea}>
@@ -50,24 +51,28 @@ export const WelcomeScreen = () => {
               errorMessage={errorEmail}
               label={t('baseUrl')}
               labelStyle={CommonStyles.labelStyle}
+              // @ts-expect-error
               placeholder={t('enter-baseurl') as string}
-              onChangeText={value => {
+              onChangeText={(value: string) => {
                 setErrorEmail('');
                 setBaseUrl(value);
               }}
-              keyboardType={'visible-password'}
+              keyboardType={
+                Platform.OS === 'android' ? 'visible-password' : 'default'
+              }
             />
 
             <Input
-            //   secureTextEntry={true}
+              //   secureTextEntry={true}
               disabled={loading}
               disabledInputStyle={CommonStyles.disabledInputStyle}
               inputContainerStyle={CommonStyles.inputContainerStyle}
               errorMessage={errorPassword}
               label={t('token')}
               labelStyle={CommonStyles.labelStyle}
+              // @ts-expect-error
               placeholder={t('enter-token') as string}
-              onChangeText={value => {
+              onChangeText={(value: string) => {
                 setErrorPassword('');
                 setToken(value);
               }}
